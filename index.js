@@ -23,7 +23,7 @@ const Validator = class {
                 return false;
             },
             max: (data, len=1) => {
-                if (typeof data === Number) {
+                if (typeof this.validationData[data] === "number") {
                     if (this.validationData[data] > len) {
                         return true
                     }
@@ -37,8 +37,8 @@ const Validator = class {
 
             },
             min: (data, len=1) => {
-                if (typeof data === Number) {
-                    if (this.validationData[data] > len) {
+                if (typeof this.validationData[data] === "number") {
+                    if (this.validationData[data] < len) {
                         return true;
                     }
                 }
@@ -75,8 +75,6 @@ Validator.prototype.validate = function() {
         });
         
     });
-
-    return this.hasError();
 }
 
 Validator.prototype.getError = function(name) {
@@ -104,6 +102,6 @@ Validator.prototype.fillError = function(fieldName, validationKey, param=null) {
 }
 
 const validator = new Validator(
-    { name: 'surya', text: 'abcf' },
-    { name: 'required|min:2', text: 'required|max:4' }
+    { name: 'surya', text: 'abcf', number: 10 },
+    { name: 'required|min:2', text: 'required|max:4', number: 'max:5' }
 );
