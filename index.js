@@ -15,7 +15,7 @@ const Validator = class {
         };
         
         this.rules = {
-            required: (data,) => {
+            required: (data) => {
                 if (this.validationData[data] === '') {
                     return true
                 }
@@ -105,3 +105,5 @@ const validator = new Validator(
     { name: 'surya', text: 'abcf', number: 10 },
     { name: 'required|min:2', text: 'required|max:4', number: 'max:5' }
 );
+
+module.exports = Validator;
