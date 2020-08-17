@@ -70,7 +70,7 @@ const Validator = class {
                     return true;
                 }
 
-                if (typeof(this.validationData[data]) === 'string') {
+                if (typeof this.validationData[data] !== 'string') {
                     return true;
                 }
 
@@ -80,18 +80,26 @@ const Validator = class {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
                     return true;
                 }
-                const regex = new RegExp(/[0-9]/);
+                const regex = new RegExp(/^[0-9]+$/);
 
-                return regex.test(this.validationData[data]);
+                if(!regex.test(this.validationData[data])) {
+                    return true;
+                }
+
+                return false;
             },
             alpha: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
                     return true;
                 }
-                
-                const regex = new RegExp(/[a-zA-Z]/);
 
-                return regex.test(this.validationData[data]);
+                const regex = new RegExp(/^[a-zA-Z]+$/);
+
+                if(!regex.test(this.validationData[data])) {
+                    return true;
+                }
+
+                return false;
             }
         };
     };
