@@ -13,7 +13,8 @@ const Validator = class {
                 min: (len) => `Minimum length of this field is ${len}`,
                 string: () => 'This field must be a string',
                 numeric: () => 'This field must be a number',
-                alpha: () => 'This field must be character'
+                alpha: () => 'This field must be character',
+                email: () => 'This field must be a valid email'
             },
         };
         
@@ -96,6 +97,31 @@ const Validator = class {
                 const regex = new RegExp(/^[a-zA-Z]+$/);
 
                 if(!regex.test(this.validationData[data])) {
+                    return true;
+                }
+
+                return false;
+            },
+            email: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return true;
+                }
+
+                const sample = this.validationData[data];
+                let atCount = 0;
+                sample.split('').forEach(function(char) {
+                    if (char === '@') {
+                        atCount++;
+                    }
+
+                    if (atCount > 1) {
+                        return true;
+                    }
+                });
+
+                const regex = new RegExp(/[a-zA-Z0-9]+(@){1}[a-z]+\.(com|co|org|net|biz)(\.[a-z]{2})?/i);
+
+                if (!regex.test(data)) {
                     return true;
                 }
 

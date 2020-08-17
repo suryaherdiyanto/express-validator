@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const { testRequired, testMax, testMin, testString, testNumeric, testAlpha } = require('./unit');
+const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail } = require('./unit');
 const Validation = require('../index');
 
 describe('testing unit all validation rules', function() {
@@ -100,6 +100,31 @@ describe('testing unit all validation rules', function() {
     });
     it('test alpha rule with sample data type is string return false if character passed', function() {
         testAlpha('qwerty', true);
+    });
+
+    it('test email rule with sample data empty string, will produce true', function() {
+        testEmail('');
+    });
+    it('test email rule with sample data null, will produce true', function() {
+        testEmail(null);
+    });
+    it('test email rule with sample data bogus string, will produce true', function() {
+        testEmail('asdf fdas asdf@!');
+    });
+    it('test email rule with sample data numeric, will produce true', function() {
+        testEmail('126377748');
+    });
+    it('test email rule with sample data alpha numeric, will produce true', function() {
+        testEmail('dfjkdfnnasd 9200012');
+    });
+    it('test email rule with sample data email with double @, will produce true', function() {
+        testEmail('example@yahoo@gmail.com');
+    });
+    it('test email rule with sample data a valid email, will produce false', function() {
+        testEmail('admin@example.org', false);
+    });
+    it('test email rule with sample data a valid email with country code domain, will produce false', function() {
+        testEmail('example@example.co.au', false);
     });
 
 });

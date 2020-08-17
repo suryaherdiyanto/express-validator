@@ -60,3 +60,13 @@ exports.testAlpha = function(sample, opp = false) {
         expect(validator.rules.alpha('test')).to.be.a('boolean').to.be.false;
     }
 }
+
+exports.testEmail = function(sample, opp = false) {
+    let validator = new Validation({ test: sample });
+
+    if (!opp) {
+        expect(validator.rules.email('test')).to.be.a('boolean').to.be.true;
+    } else {
+        expect(validator.rules.email('test')).to.be.a('boolean').to.be.false;
+    }
+}
