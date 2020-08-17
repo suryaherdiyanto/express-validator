@@ -10,19 +10,30 @@ const Validator = class {
             messages: {
                 required: () => 'This field is required',
                 max: (len) => `Maximum length of this field is ${len}`,
-                min: (len) => `Minimum length of this field is ${len}`
+                min: (len) => `Minimum length of this field is ${len}`,
+                string: () => 'This field must be a string',
+                numeric: () => 'This field must be a number',
+                alpha: () => 'This field must be character'
             },
         };
         
         this.rules = {
             required: (data) => {
-                if (this.validationData[data] === '') {
-                    return true
+                if (!this.validationData[data]) {
+                    return true;
+                }
+
+                if (this.validationData[data] === '' || this.validationData[data] === undefined) {
+                    return true;
                 }
 
                 return false;
             },
             max: (data, len=1) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return true;
+                }
+
                 if (typeof this.validationData[data] === "number") {
                     if (this.validationData[data] > len) {
                         return true
@@ -37,6 +48,10 @@ const Validator = class {
 
             },
             min: (data, len=1) => {
+                if (!this.validationData[data] && this.validationData[data] === undefined) {
+                    return true;
+                }
+
                 if (typeof this.validationData[data] === "number") {
                     if (this.validationData[data] < len) {
                         return true;
@@ -49,6 +64,34 @@ const Validator = class {
 
                 return false;
         
+            },
+            string: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return true;
+                }
+
+                if (typeof(this.validationData[data]) === 'string') {
+                    return true;
+                }
+
+                return false;
+            },
+            numeric: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return true;
+                }
+                const regex = new RegExp(/[0-9]/);
+
+                return regex.test(this.validationData[data]);
+            },
+            alpha: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return true;
+                }
+                
+                const regex = new RegExp(/[a-zA-Z]/);
+
+                return regex.test(this.validationData[data]);
             }
         };
     };
