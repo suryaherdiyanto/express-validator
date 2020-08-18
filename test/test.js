@@ -121,10 +121,10 @@ describe('testing unit all validation rules', function() {
         testEmail('example@yahoo@gmail.com');
     });
     it('test email rule with sample data a valid email, will produce false', function() {
-        testEmail('admin@example.org', false);
+        testEmail('johndoe@example.com', true);
     });
     it('test email rule with sample data a valid email with country code domain, will produce false', function() {
-        testEmail('example@example.co.au', false);
+        testEmail('example@example.co.au', true);
     });
 
 });
@@ -153,5 +153,33 @@ describe('testing validator must working properly', function() {
         expect(isError).to.equal(false);
         expect(isError).to.be.a('boolean');
         expect(validator.getAllErrors()).not.have.property('name');
+    });
+
+    it('validation with multiple field and rules all validation passes', function() {
+        let validator = new Validation(
+            { 
+                username: 'johndoe123',
+                password: '123123123',
+                email: 'johndoe@example.com',
+                age: 20,
+
+            }, 
+            { 
+                username: 'required|string',
+                password: 'required|min:6',
+                email: 'required|string|email',
+                age: 'required|max:25'
+            }
+        );
+
+        validator.validate();
+        const isError = validator.hasError();
+        const errors = validator.getAllErrors();
+
+        expect(errors).not.have.property('username');
+        expect(errors).not.have.property('password');
+        expect(errors).not.have.property('email');
+        expect(errors).not.have.property('age');
+        expect(isError).to.be.a('boolean').to.equal(false);
     });
 });

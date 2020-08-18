@@ -111,17 +111,17 @@ const Validator = class {
                 let atCount = 0;
                 sample.split('').forEach(function(char) {
                     if (char === '@') {
-                        atCount++;
-                    }
-
-                    if (atCount > 1) {
-                        return true;
+                        atCount += 1;
                     }
                 });
+                
+                if (atCount > 1) {
+                    return true;
+                }
 
                 const regex = new RegExp(/[a-zA-Z0-9]+(@){1}[a-z]+\.(com|co|org|net|biz)(\.[a-z]{2})?/i);
 
-                if (!regex.test(data)) {
+                if (!regex.test(this.validationData[data])) {
                     return true;
                 }
 
