@@ -1,8 +1,8 @@
 const Validator = class {
 
-    constructor(data, rules) {
-        this.validationData = data;
-        this.validationRules = rules;
+    constructor() {
+        this.validationData;
+        this.validationRules;
 
         this.validationErrors = {};
 
@@ -198,6 +198,19 @@ Validator.prototype.fillError = function(fieldName, validationKey, param=null) {
     } else {
         this.validationErrors[fieldName].push(this.error.messages[validationKey](param));
     }
+}
+
+Validator.prototype.build = function(data, rules) {
+    this.cleanUp();
+
+    this.validationData = data;
+    this.validationRules = rules;
+}
+
+Validator.prototype.cleanUp = function() {
+    this.validationData = null;
+    this.validationRules = null;
+    this.validationErrors = {};
 }
 
 

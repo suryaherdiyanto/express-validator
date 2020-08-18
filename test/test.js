@@ -144,7 +144,8 @@ describe('testing unit all validation rules', function() {
 
 describe('testing validator must working properly', function() {
     it('validate required if none passed', function() {
-        let validator = new Validation({ name: '' }, { name: 'required' });
+        let validator = new Validation();
+        validator.build({ name: '' }, { name: 'required' });
     
         validator.validate();
         const isError = validator.hasError();
@@ -158,7 +159,8 @@ describe('testing validator must working properly', function() {
     });
     
     it('validate required max min with all validations passes', function() {
-        let validator = new Validation({ name: 'surya' }, { name: 'required|max:5|min:2' });
+        let validator = new Validation();
+        validator.build({ name: 'surya' }, { name: 'required|max:5|min:2' });
         
         validator.validate();
         const isError = validator.hasError();
@@ -169,21 +171,22 @@ describe('testing validator must working properly', function() {
     });
 
     it('validation with multiple field and rules all validation passes', function() {
-        let validator = new Validation(
-            { 
-                username: 'johndoe123',
-                password: '123123123',
-                email: 'johndoe@example.com',
-                age: 20,
+        let validator = new Validation();
+        validator.build(
+        {     
+            username: 'johndoe123',
+            password: '123123123',
+            email: 'johndoe@example.com',
+            age: 20,
 
-            }, 
-            { 
-                username: 'required|string',
-                password: 'required|min:6',
-                email: 'required|string|email',
-                age: 'required|integer|max:25'
-            }
-        );
+        }, 
+        { 
+            username: 'required|string',
+            password: 'required|min:6',
+            email: 'required|string|email',
+            age: 'required|integer|max:25'
+        }
+        )
 
         validator.validate();
         const isError = validator.hasError();
