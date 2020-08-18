@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail } = require('./unit');
+const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail, testInteger } = require('./unit');
 const Validation = require('../index');
 
 describe('testing unit all validation rules', function() {
@@ -125,6 +125,19 @@ describe('testing unit all validation rules', function() {
     });
     it('test email rule with sample data a valid email with country code domain, will produce false', function() {
         testEmail('example@example.co.au', true);
+    });
+
+    it('test integer rule with sample data null, will produce true', function() {
+        testInteger(null);
+    });
+    it('test integer with sample data type string, will produce true', function() {
+        testInteger('0388894100');
+    });
+    it('test integer rule with sample data type floating point, will produce true', function() {
+        testInteger(77.7);
+    });
+    it('test integer rule with sample data type integer, return false if valid integer passed', function() {
+        testInteger(1030699, true);
     });
 
 });

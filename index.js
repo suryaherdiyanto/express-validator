@@ -14,7 +14,8 @@ const Validator = class {
                 string: () => 'This field must be a string',
                 numeric: () => 'This field must be a number',
                 alpha: () => 'This field must be character',
-                email: () => 'This field must be a valid email'
+                email: () => 'This field must be a valid email',
+                integer: () => 'This field must be an interger'
             },
         };
         
@@ -114,7 +115,7 @@ const Validator = class {
                         atCount += 1;
                     }
                 });
-                
+
                 if (atCount > 1) {
                     return true;
                 }
@@ -122,6 +123,27 @@ const Validator = class {
                 const regex = new RegExp(/[a-zA-Z0-9]+(@){1}[a-z]+\.(com|co|org|net|biz)(\.[a-z]{2})?/i);
 
                 if (!regex.test(this.validationData[data])) {
+                    return true;
+                }
+
+                return false;
+            },
+            integer: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return true;
+                }
+
+                if (typeof this.validationData[data] !== 'number') {
+                    return true;
+                }
+
+                const startWithZero = new RegExp(/^0+/);
+                if (startWithZero.test(this.validationData[data])) {
+                    return true;
+                }
+
+                const hasDot = new RegExp(/[\.]+/);
+                if (hasDot.test(this.validationData[data])) {
                     return true;
                 }
 

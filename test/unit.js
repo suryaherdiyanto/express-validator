@@ -70,3 +70,13 @@ exports.testEmail = function(sample, opp = false) {
         expect(validator.rules.email('test')).to.be.a('boolean').to.be.false;
     }
 }
+
+exports.testInteger = function(sample, opp = false) {
+    let validator = new Validation({ test: sample });
+
+    if (!opp) {
+        expect(validator.rules.integer('test')).to.be.a('boolean').to.be.true;
+    } else {
+        expect(validator.rules.integer('test')).to.be.a('boolean').to.be.false;
+    }
+}
