@@ -181,7 +181,7 @@ describe('testing validator must working properly', function() {
                 username: 'required|string',
                 password: 'required|min:6',
                 email: 'required|string|email',
-                age: 'required|max:25'
+                age: 'required|integer|max:25'
             }
         );
 
