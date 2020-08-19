@@ -186,7 +186,7 @@ describe('testing validator must working properly', function() {
             email: 'required|string|email',
             age: 'required|integer|max:25'
         }
-        )
+        );
 
         validator.validate();
         const isError = validator.hasError();
@@ -198,4 +198,36 @@ describe('testing validator must working properly', function() {
         expect(errors).not.have.property('age');
         expect(isError).to.be.a('boolean').to.equal(false);
     });
+
+    it('validation with multiple field and rules with error in email, password and age field', function() {
+        let validator = new Validation();
+        validator.build(
+        {     
+            username: 'johndoe123',
+            password: '1231',
+            email: 'johndoe@example',
+            age: '20',
+
+        }, 
+        { 
+            username: 'required|string',
+            password: 'required|min:6',
+            email: 'required|string|email',
+            age: 'required|integer|max:25'
+        }
+        );
+
+        validator.validate();
+        const isError = validator.hasError();
+        const errors = validator.getAllErrors();
+
+        expect(errors).not.have.property('username');
+        expect(errors).have.property('password');
+        expect(errors).have.property('email');
+        expect(errors).have.property('age');
+        expect(errors.password).have.lengthOf(1);
+        expect(errors.email).have.lengthOf(1);
+        expect(errors.age).have.lengthOf(1);
+        expect(isError).to.be.true;
+    })
 });
