@@ -178,13 +178,15 @@ describe('testing validator must working properly', function() {
             password: '123123123',
             email: 'johndoe@example.com',
             age: 20,
+            note: 'the sample text'
 
         }, 
         { 
             username: 'required|string',
             password: 'required|min:6',
             email: 'required|string|email',
-            age: 'required|integer|max:25'
+            age: 'required|integer|max:25',
+            note: 'optional|string'
         }
         );
 
@@ -196,6 +198,7 @@ describe('testing validator must working properly', function() {
         expect(errors).not.have.property('password');
         expect(errors).not.have.property('email');
         expect(errors).not.have.property('age');
+        expect(errors).not.have.property('string');
         expect(isError).to.be.a('boolean').to.equal(false);
     });
 
@@ -207,13 +210,15 @@ describe('testing validator must working properly', function() {
             password: '1231',
             email: 'johndoe@example',
             age: '20',
+            note: 123123
 
         }, 
         { 
             username: 'required|string',
             password: 'required|min:6',
             email: 'required|string|email',
-            age: 'required|integer|max:25'
+            age: 'required|integer|max:25',
+            note: 'optional|string'
         }
         );
 
@@ -225,9 +230,11 @@ describe('testing validator must working properly', function() {
         expect(errors).have.property('password');
         expect(errors).have.property('email');
         expect(errors).have.property('age');
+        expect(errors).have.property('note');
         expect(errors.password).have.lengthOf(1);
         expect(errors.email).have.lengthOf(1);
         expect(errors.age).have.lengthOf(1);
+        expect(errors.note).have.lengthOf(1);
         expect(isError).to.be.true;
     })
 });

@@ -148,6 +148,14 @@ const Validator = class {
                 }
 
                 return false;
+            },
+            optional: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    
+                    return false;
+                }
+
+                return true;
             }
         };
     };
@@ -160,18 +168,22 @@ Validator.prototype.validate = function() {
     validationKeys.forEach((key) => {
         const rules = this.validationRules[key].split('|');
         
-        rules.forEach((rule) => {
+        for (let index = 0; index < rules.length; index++) {
             let param = null;
-            let ruleName = rule;
+            let ruleName = rules[index];
 
-            if (rule.indexOf(':') > 1) {
-                [ruleName, param] = rule.split(':');
+            if (ruleName.indexOf(':') > 1) {
+                [ruleName, param] = ruleName.split(':');
             }
 
-            if (this.rules[ruleName](key, param)) {
+            if(!this.rules[ruleName](key, param) && ruleName === 'optional') {
+                break;
+            }
+
+            if (this.rules[ruleName](key, param) && ruleName !== 'optional') {
                 this.fillError(key, ruleName, param);
             }
-        });
+        }
         
     });
 }
