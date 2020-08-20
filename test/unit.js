@@ -1,8 +1,8 @@
 const expect = require('chai').expect;
-const Validation = require('../index');
+const { Validator } = require('../index');
 
 exports.testRequired = function(sample, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -13,7 +13,7 @@ exports.testRequired = function(sample, opp = false) {
 }
 
 exports.testMax = function(sample, max, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -24,7 +24,7 @@ exports.testMax = function(sample, max, opp = false) {
 }
 
 exports.testMin = function(sample, min, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -35,7 +35,7 @@ exports.testMin = function(sample, min, opp = false) {
 }
 
 exports.testString = function(sample, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -46,7 +46,7 @@ exports.testString = function(sample, opp = false) {
 }
 
 exports.testNumeric = function(sample, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -57,7 +57,7 @@ exports.testNumeric = function(sample, opp = false) {
 }
 
 exports.testAlpha = function(sample, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -68,7 +68,7 @@ exports.testAlpha = function(sample, opp = false) {
 }
 
 exports.testAlphaNumeric = function(sample, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -79,7 +79,7 @@ exports.testAlphaNumeric = function(sample, opp = false) {
 }
 
 exports.testEmail = function(sample, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
@@ -90,7 +90,7 @@ exports.testEmail = function(sample, opp = false) {
 }
 
 exports.testInteger = function(sample, opp = false) {
-    let validator = new Validation();
+    let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {

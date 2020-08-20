@@ -1,6 +1,7 @@
 const Validator = class {
 
-    constructor() {
+    constructor(session = null) {
+        this.session = session;
         this.validationData;
         this.validationRules;
 
@@ -204,6 +205,10 @@ Validator.prototype.validate = function() {
         }
         
     });
+
+    if (this.session) {
+        this.session.validationErrors = this.getAllErrors();
+    }
 }
 
 Validator.prototype.getError = function(name) {
@@ -212,6 +217,18 @@ Validator.prototype.getError = function(name) {
 
 Validator.prototype.getAllErrors = function() {
     return this.validationErrors;
+}
+
+Validator.prototype.flashErrors = function() {
+
+    if (this.session) {
+        let errors = this.session.validationErrors;
+        this.session.validationErrors = null;
+
+        return errors;
+    }
+
+    return null;
 }
 
 Validator.prototype.hasError = function() {
@@ -235,6 +252,8 @@ Validator.prototype.build = function(data, rules) {
 
     this.validationData = data;
     this.validationRules = rules;
+
+    return this;
 }
 
 Validator.prototype.cleanUp = function() {
@@ -244,4 +263,19 @@ Validator.prototype.cleanUp = function() {
 }
 
 
-module.exports = Validator;
+const validation = function() {
+    
+    return function(req, res, next) {
+
+        if (!req.validator) {
+            req.validator = new Validator(req.session);
+        }
+    
+        next();
+    }
+}
+
+module.exports = {
+    validation,
+    Validator
+};

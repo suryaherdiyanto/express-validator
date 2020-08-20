@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail, testInteger, testAlphaNumeric } = require('./unit');
-const Validation = require('../index');
+const { Validator } = require('../index');
 
 describe('testing unit all validation rules', function() {
     it('test required rule return true if nothing passed', function() {
@@ -160,7 +160,7 @@ describe('testing unit all validation rules', function() {
 
 describe('testing validator must working properly', function() {
     it('validate required if none passed', function() {
-        let validator = new Validation();
+        let validator = new Validator();
         validator.build({ name: '' }, { name: 'required' });
     
         validator.validate();
@@ -175,7 +175,7 @@ describe('testing validator must working properly', function() {
     });
     
     it('validate required max min with all validations passes', function() {
-        let validator = new Validation();
+        let validator = new Validator();
         validator.build({ name: 'surya' }, { name: 'required|max:5|min:2' });
         
         validator.validate();
@@ -187,7 +187,7 @@ describe('testing validator must working properly', function() {
     });
 
     it('validation with multiple field and rules all validation passes', function() {
-        let validator = new Validation();
+        let validator = new Validator();
         validator.build(
         {     
             username: 'johndoe123|alpha_numeric',
@@ -219,7 +219,7 @@ describe('testing validator must working properly', function() {
     });
 
     it('validation with multiple field and rules with error in email, password, age and note fields', function() {
-        let validator = new Validation();
+        let validator = new Validator();
         validator.build(
         {     
             username: 'john!@#doe123',
