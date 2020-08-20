@@ -67,6 +67,17 @@ exports.testAlpha = function(sample, opp = false) {
     }
 }
 
+exports.testAlphaNumeric = function(sample, opp = false) {
+    let validator = new Validation();
+    validator.build({ test: sample });
+
+    if (!opp) {
+        expect(validator.rules.alpha_numeric('test')).to.be.a('boolean').to.be.true;
+    } else {
+        expect(validator.rules.alpha_numeric('test')).to.be.a('boolean').to.be.false;
+    }
+}
+
 exports.testEmail = function(sample, opp = false) {
     let validator = new Validation();
     validator.build({ test: sample });

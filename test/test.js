@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail, testInteger } = require('./unit');
+const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail, testInteger, testAlphaNumeric } = require('./unit');
 const Validation = require('../index');
 
 describe('testing unit all validation rules', function() {
@@ -102,6 +102,22 @@ describe('testing unit all validation rules', function() {
         testAlpha('qwerty', true);
     });
 
+    it('test alpha numeric rule with sample data type is null return true if null passed', function() {
+        testAlphaNumeric(null);
+    });
+    it('test alpha numeric rule with sample data type is number return true if number passed', function() {
+        testAlphaNumeric(1234567);
+    });
+    it('test alpha numeric rule with sample data type is string return false if number passed', function() {
+        testAlphaNumeric('1234567', true);
+    });
+    it('test alpha numeric rule with sample data type is string return false if mix value passed', function() {
+        testAlphaNumeric('aBcdefr1234567', true);
+    });
+    it('test alpha numeric rule with sample data type is string return false if character passed', function() {
+        testAlphaNumeric('qwerty123', true);
+    });
+
     it('test email rule with sample data empty string, will produce true', function() {
         testEmail('');
     });
@@ -174,7 +190,7 @@ describe('testing validator must working properly', function() {
         let validator = new Validation();
         validator.build(
         {     
-            username: 'johndoe123',
+            username: 'johndoe123|alpha_numeric',
             password: '123123123',
             email: 'johndoe@example.com',
             age: 20,
@@ -202,11 +218,11 @@ describe('testing validator must working properly', function() {
         expect(isError).to.be.a('boolean').to.equal(false);
     });
 
-    it('validation with multiple field and rules with error in email, password and age field', function() {
+    it('validation with multiple field and rules with error in email, password, age and note fields', function() {
         let validator = new Validation();
         validator.build(
         {     
-            username: 'johndoe123',
+            username: 'john!@#doe123',
             password: '1231',
             email: 'johndoe@example',
             age: '20',
@@ -214,7 +230,7 @@ describe('testing validator must working properly', function() {
 
         }, 
         { 
-            username: 'required|string',
+            username: 'required|string|alpha_numeric',
             password: 'required|min:6',
             email: 'required|string|email',
             age: 'required|integer|max:25',
@@ -226,11 +242,13 @@ describe('testing validator must working properly', function() {
         const isError = validator.hasError();
         const errors = validator.getAllErrors();
 
-        expect(errors).not.have.property('username');
+        expect(errors).have.property('username');
         expect(errors).have.property('password');
         expect(errors).have.property('email');
         expect(errors).have.property('age');
         expect(errors).have.property('note');
+        
+        expect(errors.username).have.lengthOf(1);
         expect(errors.password).have.lengthOf(1);
         expect(errors.email).have.lengthOf(1);
         expect(errors.age).have.lengthOf(1);

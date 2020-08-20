@@ -14,8 +14,9 @@ const Validator = class {
                 string: () => 'This field must be a string',
                 numeric: () => 'This field must be a number',
                 alpha: () => 'This field must be character',
+                alpha_numeric: () => 'This field must be an alpha numeric',
                 email: () => 'This field must be a valid email',
-                integer: () => 'This field must be an interger'
+                integer: () => 'This field must be an interger',
             },
         };
         
@@ -96,6 +97,23 @@ const Validator = class {
                 }
 
                 const regex = new RegExp(/^[a-zA-Z]+$/);
+
+                if(!regex.test(this.validationData[data])) {
+                    return true;
+                }
+
+                return false;
+            },
+            alpha_numeric: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return true;
+                }
+
+                if (typeof this.validationData[data] === 'number') {
+                    return true;
+                }
+
+                const regex = new RegExp(/^[a-zA-Z0-9_]*$/);
 
                 if(!regex.test(this.validationData[data])) {
                     return true;
