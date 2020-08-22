@@ -19,7 +19,7 @@ const Validator = class {
                 alpha: () => 'This field must be character',
                 alpha_numeric: () => 'This field must be an alpha numeric',
                 email: () => 'This field must be a valid email',
-                integer: () => 'This field must be an interger',
+                integer: () => 'This field must be an integer',
             },
         };
         
