@@ -1,3 +1,5 @@
+"use strict";
+
 const Validator = class {
 
     constructor(session = null) {
