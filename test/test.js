@@ -4,8 +4,6 @@ const expect = chai.expect;
 const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail, testInteger, testAlphaNumeric } = require('./unit');
 const { Validator } = require('../index');
 
-chai.use(chaiHttp);
-
 describe('testing unit all validation rules', function() {
     it('test required rule return true if nothing passed', function() {
         testRequired('');
