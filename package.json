@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "nodemon server.js",
-    "test": "mocha"
+    "test": "mocha ./test/test.js",
+    "test-http": "mocha ./test/http.js"
   },
   "repository": {
     "type": "git",
