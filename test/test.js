@@ -147,6 +147,9 @@ describe('testing unit all validation rules', function() {
     it('test email rule with sample data a valid email with country code domain, will produce false', function() {
         testEmail('example@example.co.au', true);
     });
+    it('test email rule with sample data a valid email with country code domain only, will produce false', function() {
+        testEmail('johndoe@example.au', true);
+    });
 
     it('test integer rule with sample data null, will produce true', function() {
         testInteger(null);

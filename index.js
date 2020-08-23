@@ -141,7 +141,7 @@ const Validator = class {
                     return true;
                 }
 
-                const regex = new RegExp(/[a-zA-Z0-9]+(@){1}[a-z]+\.(com|co|org|net|biz)(\.[a-z]{2})?/i);
+                const regex = new RegExp(/[a-zA-Z0-9]+(@){1}[a-z]+\.([a-z]){2,3}(\.[a-z]{2})?/i);
 
                 if (!regex.test(this.validationData[data])) {
                     return true;
