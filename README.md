@@ -62,7 +62,7 @@ the `validator.validate` will validate all given fields and fill the error messa
 |-------------|------------|--------------|--------------                                        |
 | `build()`| none       | validator instance      | initiate the validation. |
 | `hasError()`| none       | boolean      | check if validation has any error from each field.|
-| `flashError()`| none       | void      | store the validation messages to the session.|
+| `flashError()`| none       | void      | store and receive validation messages from the session.|
 | `getAllErrors()`| none       | objects      | return all errors for each field.|
 | `getError()`| field_name       | object      | return validation errors for specified field.|
 | `validate()`| none       | void      | running the validation process.|
