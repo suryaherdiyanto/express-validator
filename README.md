@@ -41,7 +41,7 @@ app.post('/validation', function(req, res) {
     res.end('validator testing');
 });
 ```
-we build the validation using `req.validator.build()` first parameter will be your field that need to be validated and second parameter validation rules seperated with `|`, each given field will check all given rules so the error messages for each field will return `array`.
+we build the validation using `req.validator.build()` this function will return the `Validator` instance. first parameter will be your field that need to be validated and second parameter validation rules seperated with `|`, each given field will check all given rules so the error messages for each field will return `array`.
 
 the `validator.validate` will validate all given fields and fill the error message if validation was fail for given rules.
 
