@@ -1,5 +1,9 @@
 "use strict";
 
+/**
+ * The validator class, this class will hold all functionality of the validation process.
+ * 
+ */
 const Validator = class {
 
     constructor(session = null) {
@@ -182,6 +186,12 @@ const Validator = class {
     };
 }
 
+/**
+ * Begin validation process after validation build.
+ * 
+ * @param none
+ * @return void
+ */
 Validator.prototype.validate = function() {
     
     const validationKeys = Object.keys(this.validationRules);
@@ -213,14 +223,32 @@ Validator.prototype.validate = function() {
     }
 }
 
+/**
+ * Get validation error messages for given field name.
+ * 
+ * @param {string} name 
+ * @return {array}
+ */
 Validator.prototype.getError = function(name) {
     return this.validationErrors[name];
 }
 
+/**
+ * Return all validation error messages for each field.
+ * 
+ * @param {none}
+ * @return {objects}
+ */
 Validator.prototype.getAllErrors = function() {
     return this.validationErrors;
 }
 
+/**
+ * Store and receive the validation messages from session.
+ * 
+ * @param {none}
+ * @return {objects}
+ */
 Validator.prototype.flashErrors = function() {
 
     if (this.session) {
@@ -233,6 +261,12 @@ Validator.prototype.flashErrors = function() {
     return null;
 }
 
+/**
+ * Check if validation process has error in any fields.
+ * 
+ * @param {none}
+ * @return {boolean}
+ */
 Validator.prototype.hasError = function() {
     if (Object.keys(this.validationErrors).length > 0) {
         return true;
@@ -241,6 +275,14 @@ Validator.prototype.hasError = function() {
     return false;
 }
 
+/**
+ * If validation was fail store error message to specified field
+ * 
+ * @param {string} fieldName 
+ * @param {string} validationKey 
+ * @param {mix} param
+ * @return {void} 
+ */
 Validator.prototype.fillError = function(fieldName, validationKey, param=null) {
     if (!this.validationErrors[fieldName]) {
         this.validationErrors[fieldName] = [this.error.messages[validationKey](param)];
@@ -249,6 +291,12 @@ Validator.prototype.fillError = function(fieldName, validationKey, param=null) {
     }
 }
 
+/**
+ * Initiate the validation.
+ * 
+ * @param {object} data 
+ * @param {string} rules 
+ */
 Validator.prototype.build = function(data, rules) {
     this.cleanUp();
 
@@ -258,6 +306,12 @@ Validator.prototype.build = function(data, rules) {
     return this;
 }
 
+/**
+ * Make sure all validationData, validationRules and validationErrors are in default state.
+ * 
+ * @param {none}
+ * @return {void}
+ */
 Validator.prototype.cleanUp = function() {
     this.validationData = null;
     this.validationRules = null;
