@@ -1,12 +1,25 @@
 {
-  "name": "kodinggen/express-validator",
-  "version": "1.0.0",
+  "name": "@kodinggen/express-validator",
+  "version": "1.0.0-beta",
   "description": "validation package for express application",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "ejs": "^3.1.5",
+    "express-session": "^1.17.1",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.1"
+  },
   "scripts": {
-    "watch": "nodemon server.js",
-    "test": "mocha ./test/test.js",
-    "test-http": "mocha ./test/http.js"
+    "test": "mocha",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -22,16 +35,5 @@
   "bugs": {
     "url": "https://github.com/suryaherdiyanto/express-validator/issues"
   },
-  "homepage": "https://github.com/suryaherdiyanto/express-validator#readme",
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "ejs": "^3.1.5",
-    "express": "^4.17.1",
-    "mocha": "^8.1.1",
-    "nodemon": "^2.0.4"
-  },
-  "dependencies": {
-    "express-session": "^1.17.1"
-  }
+  "homepage": "https://github.com/suryaherdiyanto/express-validator#readme"
 }
