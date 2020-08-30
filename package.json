@@ -1,5 +1,5 @@
 {
-  "name": "express-validator",
+  "name": "kodinggen/express-validator",
   "version": "1.0.0",
   "description": "validation package for express application",
   "main": "index.js",
