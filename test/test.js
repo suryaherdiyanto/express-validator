@@ -177,6 +177,10 @@ describe('testing validator must working properly', function() {
         expect(errors).to.have.property('name');
         expect(errors.name).to.be.an('array').have.lengthOf(1);
         expect(errors.name[0]).to.be.equal('This field is required');
+
+        expect(validator.hasError('name')).to.be.true;
+        expect(validator.getError('name')).equal('This field is required');
+        expect(validator.getAllErrors('name')).have.lengthOf(1);
     });
     
     it('validateSync required max min with all validations passes', function() {
@@ -252,6 +256,18 @@ describe('testing validator must working properly', function() {
         expect(errors).have.property('email');
         expect(errors).have.property('age');
         expect(errors).have.property('note');
+
+        expect(validator.hasError('email')).to.be.true;
+        expect(validator.hasError('password')).to.be.true;
+        expect(validator.hasError('age')).to.be.true;
+
+        expect(validator.getError('email')).to.equal('This field must be a valid email');
+        expect(validator.getError('password')).to.equal('Minimum length of this field is 6');
+        expect(validator.getError('age')).to.equal('This field must be an integer');
+
+        expect(validator.getAllErrors('email')).have.lengthOf(1);
+        expect(validator.getAllErrors('password')).have.lengthOf(1);
+        expect(validator.getAllErrors('age')).have.lengthOf(1);
         
         expect(errors.username).have.lengthOf(1);
         expect(errors.password).have.lengthOf(1);

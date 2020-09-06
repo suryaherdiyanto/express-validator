@@ -303,11 +303,18 @@ Validator.prototype.flashErrors = function() {
 /**
  * Check if validation process has error in any fields.
  * 
- * @param {none}
+ * @param {string} key
  * @return {boolean}
  */
-Validator.prototype.hasError = function() {
-    if (Object.keys(this.validationErrors).length > 0) {
+Validator.prototype.hasError = function(key = null) {
+
+    const errorKeys = Object.keys(this.validationErrors);
+
+    if (key) {
+        return errorKeys.some((item) => item === key);    
+    }
+
+    if (errorKeys.length > 0) {
         return true;
     }
 
