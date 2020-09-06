@@ -187,15 +187,15 @@ const Validator = class {
 }
 
 /**
- * Begin validation process after validation build.
+ * Begin validation process for given fields and rules
  * 
- * @param none
- * @return void
+ * @param {none}
+ * @return {void}
  */
-Validator.prototype.validate = function() {
-    
-    const validationKeys = Object.keys(this.validationRules);
 
+Validator.prototype.processValidation = function() {
+    const validationKeys = Object.keys(this.validationRules);
+    
     validationKeys.forEach((key) => {
         const rules = this.validationRules[key].split('|');
         
@@ -217,10 +217,37 @@ Validator.prototype.validate = function() {
         }
         
     });
+}
 
-    if (this.session) {
-        this.session.validationErrors = this.getAllErrors();
-    }
+/**
+ * Begin validation with promise for session store.
+ * 
+ * @param none
+ * @return {Promise}
+ */
+Validator.prototype.validate = function() {
+    
+    return new Promise((resolve, reject) => {
+        
+        this.processValidation();
+    
+        if (this.session) {
+            this.session.validationErrors = this.getAllErrors();
+            this.session.save(() => resolve( this.hasError() ));
+        } else {
+            reject('The session object not defined, use validateSync instead');
+        }
+    });
+}
+
+/**
+ * Validate without using cache or any other storage that require promise action
+ * 
+ * @param{none}
+ * @return{void}
+ */
+Validator.prototype.validateSync = function() {
+    this.processValidation();
 }
 
 /**
@@ -325,6 +352,10 @@ const validation = function() {
 
         if (!req.validator) {
             req.validator = new Validator(req.session);
+        }
+
+        if (!res.locals.validationErrors) {
+            res.locals.validationErrors = req.validator.flashErrors();
         }
     
         next();

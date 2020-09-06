@@ -164,11 +164,11 @@ describe('testing unit all validation rules', function() {
 });
 
 describe('testing validator must working properly', function() {
-    it('validate required if none passed', function() {
+    it('validateSync required if none passed', function() {
         let validator = new Validator();
         validator.build({ name: '' }, { name: 'required' });
     
-        validator.validate();
+        validator.validateSync();
         const isError = validator.hasError();
         const errors = validator.getAllErrors();
     
@@ -179,11 +179,11 @@ describe('testing validator must working properly', function() {
         expect(errors.name[0]).to.be.equal('This field is required');
     });
     
-    it('validate required max min with all validations passes', function() {
+    it('validateSync required max min with all validations passes', function() {
         let validator = new Validator();
         validator.build({ name: 'surya' }, { name: 'required|max:5|min:2' });
         
-        validator.validate();
+        validator.validateSync();
         const isError = validator.hasError();
     
         expect(isError).to.equal(false);
@@ -211,7 +211,7 @@ describe('testing validator must working properly', function() {
         }
         );
 
-        validator.validate();
+        validator.validateSync();
         const isError = validator.hasError();
         const errors = validator.getAllErrors();
 
@@ -243,7 +243,7 @@ describe('testing validator must working properly', function() {
         }
         );
 
-        validator.validate();
+        validator.validateSync();
         const isError = validator.hasError();
         const errors = validator.getAllErrors();
 
