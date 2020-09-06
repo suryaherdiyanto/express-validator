@@ -257,16 +257,28 @@ Validator.prototype.validateSync = function() {
  * @return {array}
  */
 Validator.prototype.getError = function(name) {
-    return this.validationErrors[name];
+    if (this.validationErrors[name]) {
+        return this.validationErrors[name][0];
+    }
+
+    return '';
 }
 
 /**
  * Return all validation error messages for each field.
  * 
- * @param {none}
+ * @param {string} key
  * @return {objects}
  */
-Validator.prototype.getAllErrors = function() {
+Validator.prototype.getAllErrors = function(key = null) {
+    if (key) {
+        if (this.validationErrors[key]) {
+            return this.validationErrors[key]
+        }
+
+        return [];
+    }
+
     return this.validationErrors;
 }
 
