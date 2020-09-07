@@ -48,8 +48,7 @@ we build the validation using `req.validator.build()` this function will return 
 
 The `validator.validateSync` will validate all given fields and fill the error message if validation was fail for given rules.
 
-> If you working with session library like [express-session](https://github.com/expressjs/session) is highly recommended using the `validate()` method, it will return promise to make sure all validation errors is saved to session object.
-<br>
+> If you working with session library like [express-session](https://github.com/expressjs/session) is highly recommended using the `validate()` method, it will return promise to make sure all validation errors is saved to session object.<br><br>
 
 #### Example validation with session
 ```javascript
