@@ -2,7 +2,7 @@
 a simple validator package for validating your form requests.
 
 # INSTALLATION
-```npm install express-validator --save```
+```npm install @kodinggen/express-validator --save```
 
 # USAGE
 
