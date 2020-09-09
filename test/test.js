@@ -5,156 +5,156 @@ const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, test
 const { Validator } = require('../index');
 
 describe('testing unit all validation rules', function() {
-    it('test required rule return true if nothing passed', function() {
+    it('test required rule return false if nothing passed', function() {
         testRequired('');
     });
-    it('test required rule return true if null passed', function() {
+    it('test required rule return false if null passed', function() {
         testRequired(null);
     });
-    it('test required rule return true if undefined passed', function() {
+    it('test required rule return false if undefined passed', function() {
         testRequired(undefined);
     });
 
-    it('test max rule with sample data type is null return true if null passed', function() {
+    it('test max rule with sample data type is null return false if null passed', function() {
         testMax(null, 10);
     });
-    it('test max rule with sample data type is undefined return true if undefined passed', function() {
+    it('test max rule with sample data type is undefined return false if undefined passed', function() {
         testMax(undefined, 10);
     });
-    it('test max rule with sample data type is number return true if sample data value greather than given parameter', function() {
+    it('test max rule with sample data type is number return false if sample data value greather than given parameter', function() {
         testMax(11, 10);
     });
-    it('test max rule with sample data type is number return false if sample data have same length with given parameter', function() {
+    it('test max rule with sample data type is number return true if sample data have same length with given parameter', function() {
         testMax(10, 10, true);
     });
-    it('test max rule with sample data type is string return true if sample data length is grather than given parameter', function() {
+    it('test max rule with sample data type is string return false if sample data length is grather than given parameter', function() {
         testMax('sample data', 10);
     });
-    it('test max rule with sample data type is string return false if sample data length is lesser than given parameter', function() {
+    it('test max rule with sample data type is string return true if sample data length is lesser than given parameter', function() {
         testMax('sample', 10, true);
     });
 
-    it('test min rule with sample data type is null return true if null passed', function() {
+    it('test min rule with sample data type is null return false if null passed', function() {
         testMax(null, 10);
     });
-    it('test min rule with sample data type is undefined return true if undefined passed', function() {
+    it('test min rule with sample data type is undefined return false if undefined passed', function() {
         testMax(undefined, 10);
     });
-    it('test min rule with sample data type is number return true if sample data value lesser than given parameter', function() {
+    it('test min rule with sample data type is number return false if sample data value lesser than given parameter', function() {
         testMin(5, 10);
     });
-    it('test min rule with sample data type is number return false if sample data have same length with given parameter', function() {
+    it('test min rule with sample data type is number return true if sample data have same length with given parameter', function() {
         testMin(5, 5, true);
     });
-    it('test min rule with sample data type is string return true if sample data length is lesser than given parameter', function() {
+    it('test min rule with sample data type is string return false if sample data length is lesser than given parameter', function() {
         testMin('sample', 10);
     });
-    it('test min rule with sample data type is string return false if sample data length is greather than given parameter', function() {
+    it('test min rule with sample data type is string return true if sample data length is greather than given parameter', function() {
         testMin('sample data', 5, true);
     });
 
-    it('test string rule with sample data type is string return true if nothing passed', function() {
+    it('test string rule with sample data type is string return false if nothing passed', function() {
         testString('');
     });
-    it('test string rule with sample data type is null return true if null passed', function() {
+    it('test string rule with sample data type is null return false if null passed', function() {
         testString(null);
     });
-    it('test string rule with sample data type is number return true if numeric is passed', function() {
+    it('test string rule with sample data type is number return false if numeric is passed', function() {
         testString(123456);
     });
-    it('test string rule with sample data type is string return false if numeric is passed', function() {
+    it('test string rule with sample data type is string return true if numeric is passed', function() {
         testString('123456', true);
     });
-    it('test string rule with sample data type is string return false if character is passed', function() {
+    it('test string rule with sample data type is string return true if character is passed', function() {
         testString('abcd', true);
     });
 
-    it('test numeric rule with sample data type is null return true if null passed', function() {
+    it('test numeric rule with sample data type is null return false if null passed', function() {
         testNumeric(null);
     });
-    it('test numeric rule with sample data type is string return true if character passed', function() {
+    it('test numeric rule with sample data type is string return false if character passed', function() {
         testNumeric('abcdefg');
     });
-    it('test numeric rule with sample data type is string return true if mix value passed', function() {
+    it('test numeric rule with sample data type is string return false if mix value passed', function() {
         testNumeric('abcdefg 123123');
     });
-    it('test numeric rule with sample data type is nubmer return true if floating point passed', function() {
+    it('test numeric rule with sample data type is nubmer return false if floating point passed', function() {
         testNumeric(100.90);
     });
-    it('test numeric rule with sample data type is string return false if numeric passed', function() {
+    it('test numeric rule with sample data type is string return true if numeric passed', function() {
         testNumeric('123123', true);
     });
-    it('test numeric rule with sample data type is number return false if numeric passed', function() {
+    it('test numeric rule with sample data type is number return true if numeric passed', function() {
         testNumeric(92388847, true);
     });
 
-    it('test alpha rule with sample data type is null return true if null passed', function() {
+    it('test alpha rule with sample data type is null return false if null passed', function() {
         testAlpha(null);
     });
-    it('test alpha rule with sample data type is number return true if number passed', function() {
+    it('test alpha rule with sample data type is number return false if number passed', function() {
         testAlpha(1234567);
     });
-    it('test alpha rule with sample data type is string return true if number passed', function() {
+    it('test alpha rule with sample data type is string return false if number passed', function() {
         testAlpha('1234567');
     });
-    it('test alpha rule with sample data type is string return true if mix value passed', function() {
+    it('test alpha rule with sample data type is string return false if mix value passed', function() {
         testAlpha('aBcdefr 1234567');
     });
-    it('test alpha rule with sample data type is string return false if character passed', function() {
+    it('test alpha rule with sample data type is string return true if character passed', function() {
         testAlpha('qwerty', true);
     });
 
-    it('test alpha numeric rule with sample data type is null return true if null passed', function() {
+    it('test alpha numeric rule with sample data type is null return false if null passed', function() {
         testAlphaNumeric(null);
     });
-    it('test alpha numeric rule with sample data type is number return true if number passed', function() {
+    it('test alpha numeric rule with sample data type is number return false if number passed', function() {
         testAlphaNumeric(1234567);
     });
-    it('test alpha numeric rule with sample data type is string return false if number passed', function() {
+    it('test alpha numeric rule with sample data type is string return true if number passed', function() {
         testAlphaNumeric('1234567', true);
     });
-    it('test alpha numeric rule with sample data type is string return false if mix value passed', function() {
+    it('test alpha numeric rule with sample data type is string return true if mix value passed', function() {
         testAlphaNumeric('aBcdefr1234567', true);
     });
-    it('test alpha numeric rule with sample data type is string return false if character passed', function() {
+    it('test alpha numeric rule with sample data type is string return true if character passed', function() {
         testAlphaNumeric('qwerty123', true);
     });
 
-    it('test email rule with sample data empty string, will produce true', function() {
+    it('test email rule with sample data empty string, will produce false', function() {
         testEmail('');
     });
-    it('test email rule with sample data null, will produce true', function() {
+    it('test email rule with sample data null, will produce false', function() {
         testEmail(null);
     });
-    it('test email rule with sample data bogus string, will produce true', function() {
+    it('test email rule with sample data bogus string, will produce false', function() {
         testEmail('asdf fdas asdf@!');
     });
-    it('test email rule with sample data numeric, will produce true', function() {
+    it('test email rule with sample data numeric, will produce false', function() {
         testEmail('126377748');
     });
-    it('test email rule with sample data alpha numeric, will produce true', function() {
+    it('test email rule with sample data alpha numeric, will produce false', function() {
         testEmail('dfjkdfnnasd 9200012');
     });
-    it('test email rule with sample data email with double @, will produce true', function() {
+    it('test email rule with sample data email with double @, will produce false', function() {
         testEmail('example@yahoo@gmail.com');
     });
-    it('test email rule with sample data a valid email, will produce false', function() {
+    it('test email rule with sample data a valid email, will produce true', function() {
         testEmail('johndoe@example.com', true);
     });
-    it('test email rule with sample data a valid email with country code domain, will produce false', function() {
+    it('test email rule with sample data a valid email with country code domain, will produce true', function() {
         testEmail('example@example.co.au', true);
     });
-    it('test email rule with sample data a valid email with country code domain only, will produce false', function() {
+    it('test email rule with sample data a valid email with country code domain only, will produce true', function() {
         testEmail('johndoe@example.au', true);
     });
 
-    it('test integer rule with sample data null, will produce true', function() {
+    it('test integer rule with sample data null, will produce false', function() {
         testInteger(null);
     });
-    it('test integer with sample data type string, will produce true', function() {
+    it('test integer with sample data type string, will produce false', function() {
         testInteger('0388894100');
     });
-    it('test integer rule with sample data type floating point, will produce true', function() {
+    it('test integer rule with sample data type floating point, will produce false', function() {
         testInteger(77.7);
     });
     it('test integer rule with sample data type integer, return false if valid integer passed', function() {

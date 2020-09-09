@@ -30,107 +30,107 @@ const Validator = class {
         this.rules = {
             required: (data) => {
                 if (!this.validationData[data]) {
-                    return true;
+                    return false;
                 }
 
                 if (this.validationData[data] === '' || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             max: (data, len=1) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] === "number") {
                     if (this.validationData[data] > len) {
-                        return true
+                        return false
                     }
                 }
 
                 if(this.validationData[data].length > len) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
 
             },
             min: (data, len=1) => {
                 if (!this.validationData[data] && this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] === "number") {
                     if (this.validationData[data] < len) {
-                        return true;
+                        return false;
                     }
                 }
 
                 if(this.validationData[data].length < len) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
         
             },
             string: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] !== 'string') {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             numeric: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
                 const regex = new RegExp(/^[0-9]+$/);
 
                 if(!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             alpha: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 const regex = new RegExp(/^[a-zA-Z]+$/);
 
                 if(!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             alpha_numeric: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] === 'number') {
-                    return true;
+                    return false;
                 }
 
                 const regex = new RegExp(/^[a-zA-Z0-9_]*$/);
 
                 if(!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             email: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 const sample = this.validationData[data];
@@ -142,37 +142,37 @@ const Validator = class {
                 });
 
                 if (atCount > 1) {
-                    return true;
+                    return false;
                 }
 
                 const regex = new RegExp(/[a-zA-Z0-9]+(@){1}[a-z]+\.([a-z]){2,3}(\.[a-z]{2})?/i);
 
                 if (!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             integer: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] !== 'number') {
-                    return true;
+                    return false;
                 }
 
                 const startWithZero = new RegExp(/^0+/);
                 if (startWithZero.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
                 const hasDot = new RegExp(/[\.]+/);
                 if (hasDot.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             optional: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
@@ -211,7 +211,7 @@ Validator.prototype.processValidation = function() {
                 break;
             }
 
-            if (this.rules[ruleName](key, param) && ruleName !== 'optional') {
+            if (!this.rules[ruleName](key, param) && ruleName !== 'optional') {
                 this.fillError(key, ruleName, param);
             }
         }
