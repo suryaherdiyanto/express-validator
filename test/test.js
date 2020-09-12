@@ -1,7 +1,18 @@
 const chai = require('chai');
 
 const expect = chai.expect;
-const { testRequired, testMax, testMin, testString, testNumeric, testAlpha, testEmail, testInteger, testAlphaNumeric } = require('./unit');
+const { 
+    testRequired,
+    testMax,
+    testMin,
+    testString,
+    testNumeric,
+    testAlpha,
+    testEmail,
+    testInteger,
+    testAlphaNumeric,
+    testBetween
+ } = require('./unit');
 const { Validator } = require('../index');
 
 describe('testing unit all validation rules', function() {
@@ -161,6 +172,63 @@ describe('testing unit all validation rules', function() {
         testInteger(1030699, true);
     });
 
+    it('test between rule with sample data null and undefined, will produce false', function() {
+        testBetween(null);
+        testBetween(undefined);
+    });
+    it('test between rule with sample data string exceed min and max value, will produce false', function() {
+        let min=6;
+        let max=12;
+
+        testBetween('john', min, max);
+        testBetween('alex', min, max);
+        testBetween('jenn', min, max);
+        testBetween('june', min, max);
+        testBetween('broo', min, max);
+        testBetween('Alexander Grahambell', min, max);
+        testBetween('Galileo Galilei', min, max);
+        testBetween('Thomas Alfa Edison', min, max);
+    });
+    it('test between rule with sample data number exceed min and max value, will produce false', function() {
+        let min=8;
+        let max=25;
+
+        testBetween(30, min, max);
+        testBetween(0, min, max);
+        testBetween(-1, min, max);
+        testBetween(2, min, max);
+        testBetween(7.5, min, max);
+        testBetween(7.9, min, max);
+        testBetween(30.1, min, max);
+        testBetween(25.1, min, max);
+    });
+    it('test between rule with sample data string in between min and max value, will produce true', function() {
+        let min=2;
+        let max=20;
+
+        testBetween('john', min, max, true);
+        testBetween('alex', min, max, true);
+        testBetween('jenn', min, max, true);
+        testBetween('june', min, max, true);
+        testBetween('broo', min, max, true);
+        testBetween('Alexander Grahambell', min, max, true);
+        testBetween('Galileo Galilei', min, max, true);
+        testBetween('Thomas Alfa Edison', min, max, true);
+    });
+    it('test between rule with sample data number in between min and max value, will produce true', function() {
+        let min=8;
+        let max=25;
+
+        testBetween(8.1, min, max, true);
+        testBetween(12, min, max, true);
+        testBetween(20, min, max, true);
+        testBetween(22, min, max, true);
+        testBetween(20.98, min, max, true);
+        testBetween(17, min, max, true);
+        testBetween(11, min, max, true);
+        testBetween(9, min, max, true);
+    });
+
 });
 
 describe('testing validator must working properly', function() {
@@ -203,6 +271,7 @@ describe('testing validator must working properly', function() {
             password: '123123123',
             email: 'johndoe@example.com',
             age: 20,
+            mark: 70,
             note: 'the sample text'
 
         }, 
@@ -211,6 +280,7 @@ describe('testing validator must working properly', function() {
             password: 'required|min:6',
             email: 'required|string|email',
             age: 'required|integer|max:25',
+            mark: 'required|integer|between:60,95',
             note: 'optional|string'
         }
         );
@@ -224,25 +294,28 @@ describe('testing validator must working properly', function() {
         expect(errors).not.have.property('email');
         expect(errors).not.have.property('age');
         expect(errors).not.have.property('string');
+        expect(errors).not.have.property('mark');
         expect(isError).to.be.a('boolean').to.equal(false);
     });
 
-    it('validation with multiple field and rules with error in email, password, age and note fields', function() {
+    it('validation with multiple field and rules with error in email, password, age, mark and note fields', function() {
         let validator = new Validator();
         validator.build(
         {     
-            username: 'john!@#doe123',
+            username: 'johndoe123',
             password: '1231',
             email: 'johndoe@example',
             age: '20',
+            mark: 70,
             note: 123123
 
         }, 
         { 
-            username: 'required|string|alpha_numeric',
+            username: 'required|string',
             password: 'required|min:6',
             email: 'required|string|email',
             age: 'required|integer|max:25',
+            mark: 'required|integer|between:80,90',
             note: 'optional|string'
         }
         );
@@ -251,29 +324,33 @@ describe('testing validator must working properly', function() {
         const isError = validator.hasError();
         const errors = validator.getAllErrors();
 
-        expect(errors).have.property('username');
+        expect(errors).does.not.have.property('username');
         expect(errors).have.property('password');
         expect(errors).have.property('email');
         expect(errors).have.property('age');
+        expect(errors).have.property('mark');
         expect(errors).have.property('note');
 
         expect(validator.hasError('email')).to.be.true;
         expect(validator.hasError('password')).to.be.true;
         expect(validator.hasError('age')).to.be.true;
+        expect(validator.hasError('mark')).to.be.true;
 
         expect(validator.getError('email')).to.equal('This field must be a valid email');
         expect(validator.getError('password')).to.equal('Minimum length of this field is 6');
         expect(validator.getError('age')).to.equal('This field must be an integer');
+        expect(validator.getError('mark')).to.equal('This field must have length between 80 and 90');
 
         expect(validator.getAllErrors('email')).have.lengthOf(1);
         expect(validator.getAllErrors('password')).have.lengthOf(1);
         expect(validator.getAllErrors('age')).have.lengthOf(1);
+        expect(validator.getAllErrors('mark')).have.lengthOf(1);
         
-        expect(errors.username).have.lengthOf(1);
         expect(errors.password).have.lengthOf(1);
         expect(errors.email).have.lengthOf(1);
         expect(errors.age).have.lengthOf(1);
         expect(errors.note).have.lengthOf(1);
+        expect(errors.mark).have.lengthOf(1);
         expect(isError).to.be.true;
     });
 });

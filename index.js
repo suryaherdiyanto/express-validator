@@ -16,14 +16,15 @@ const Validator = class {
         this.error = {
             messages: {
                 required: () => 'This field is required',
-                max: (len) => `Maximum length of this field is ${len}`,
-                min: (len) => `Minimum length of this field is ${len}`,
+                max: (...agrs) => `Maximum length of this field is ${agrs[0]}`,
+                min: (...agrs) => `Minimum length of this field is ${agrs[0]}`,
                 string: () => 'This field must be a string',
                 numeric: () => 'This field must be a number',
                 alpha: () => 'This field must be character',
                 alpha_numeric: () => 'This field must be an alpha numeric',
                 email: () => 'This field must be a valid email',
                 integer: () => 'This field must be an integer',
+                between: (...agrs) => `This field must have length between ${agrs[0]} and ${agrs[1]}`
             },
         };
         
@@ -181,7 +182,32 @@ const Validator = class {
                 }
 
                 return true;
-            }
+            },
+            between: (data, min= 0, max= 1) => {
+                let len = this.validationData[data];
+
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return false;
+                }
+
+                if (typeof this.validationData[data] === 'object') {
+                    return false;
+                }
+
+                if (typeof this.validationData[data] === 'string') {
+                    len = this.validationData[data].length;
+                }
+
+                if (len < min) {
+                    return false;
+                }
+
+                if (len > max) {
+                    return false;
+                }
+
+                return true;
+            },
         };
     };
 }
@@ -205,15 +231,27 @@ Validator.prototype.processValidation = function() {
 
             if (ruleName.indexOf(':') > 1) {
                 [ruleName, param] = ruleName.split(':');
+
             }
 
-            if(!this.rules[ruleName](key, param) && ruleName === 'optional') {
-                break;
+            if (param !== null && param.indexOf(',') > 1) {
+                let [param1, param2] = param.split(',');
+
+                if (!this.rules[ruleName](key, param1, param2) && ruleName !== 'optional') {
+                    this.fillError(key, ruleName, param1, param2)
+                }
+
+            } else {
+                
+                if(!this.rules[ruleName](key, param) && ruleName === 'optional') {
+                    break;
+                }
+    
+                if (!this.rules[ruleName](key, param) && ruleName !== 'optional') {
+                    this.fillError(key, ruleName, param);
+                }
             }
 
-            if (!this.rules[ruleName](key, param) && ruleName !== 'optional') {
-                this.fillError(key, ruleName, param);
-            }
         }
         
     });
@@ -329,11 +367,13 @@ Validator.prototype.hasError = function(key = null) {
  * @param {mix} param
  * @return {void} 
  */
-Validator.prototype.fillError = function(fieldName, validationKey, param=null) {
+Validator.prototype.fillError = function() {
+    const [fieldName, validationKey, param1, param2] = arguments;
+
     if (!this.validationErrors[fieldName]) {
-        this.validationErrors[fieldName] = [this.error.messages[validationKey](param)];
+        this.validationErrors[fieldName] = [this.error.messages[validationKey](param1, param2)];
     } else {
-        this.validationErrors[fieldName].push(this.error.messages[validationKey](param));
+        this.validationErrors[fieldName].push(this.error.messages[validationKey](param1, param2));
     }
 }
 
