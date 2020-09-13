@@ -11,7 +11,8 @@ const {
     testEmail,
     testInteger,
     testAlphaNumeric,
-    testBetween
+    testBetween,
+    testUrl
  } = require('./unit');
 const { Validator } = require('../index');
 
@@ -228,6 +229,29 @@ describe('testing unit all validation rules', function() {
         testBetween(11, min, max, true);
         testBetween(9, min, max, true);
     });
+    it('test url rule with null and undefined passed, will produce false', function() {
+        testUrl(null);
+        testUrl(undefined);
+    });
+
+    it('test url rule with number passed, will produce false', function() {
+        testUrl(99992837);
+        testUrl('12778237');
+    });
+
+    it('test url rule with random string passed, will produce false', function() {
+        testUrl('this is will not valid');
+        testUrl('abcdefd1234567');
+        testUrl('htt://welcome-to-my-site.com');
+        testUrl('www.mysite.com');
+    });
+
+    it('test url rule valid url passed, will produce true', function() {
+        testUrl('http://my-site.com', true);
+        testUrl('https://example.com', true);
+        testUrl('https://www.welcome-to-my-site.id', true);
+        testUrl('http://www.awesome.co.au', true);
+    });
 
 });
 
@@ -272,7 +296,8 @@ describe('testing validator must working properly', function() {
             email: 'johndoe@example.com',
             age: 20,
             mark: 70,
-            note: 'the sample text'
+            note: 'the sample text',
+            website_url: 'https://www.my-awesome-website.com'
 
         }, 
         { 
@@ -281,6 +306,7 @@ describe('testing validator must working properly', function() {
             email: 'required|string|email',
             age: 'required|integer|max:25',
             mark: 'required|integer|between:60,95',
+            website_url: 'optional|string|url',
             note: 'optional|string'
         }
         );
@@ -295,8 +321,38 @@ describe('testing validator must working properly', function() {
         expect(errors).not.have.property('age');
         expect(errors).not.have.property('string');
         expect(errors).not.have.property('mark');
+        expect(errors).not.have.property('website_url');
         expect(isError).to.be.a('boolean').to.equal(false);
     });
+
+    it('validation with multiple field and rules with error in url field', function() {
+        let validator = new Validator();
+        validator.build(
+        {     
+            username: 'johndoe123',
+            password: '1231',
+            email: 'johndoe@example',
+            age: 20,
+            website_url: 'httt:/mywebsite.id'
+
+        }, 
+        { 
+            username: 'required|string',
+            password: 'required|min:6',
+            email: 'required|string|email',
+            age: 'required|integer|max:25',
+            website_url: 'required|url'
+        }
+        );
+
+        validator.validateSync();
+        const isError = validator.hasError();
+        const errors = validator.getAllErrors();
+
+        expect(isError).to.be.true;
+        expect(errors).have.property('website_url').have.lengthOf(1);
+        expect(errors.website_url[0]).equal('This field must a valid url');
+    })
 
     it('validation with multiple field and rules with error in email, password, age, mark and note fields', function() {
         let validator = new Validator();

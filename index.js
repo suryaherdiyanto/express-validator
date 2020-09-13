@@ -24,7 +24,8 @@ const Validator = class {
                 alpha_numeric: () => 'This field must be an alpha numeric',
                 email: () => 'This field must be a valid email',
                 integer: () => 'This field must be an integer',
-                between: (...agrs) => `This field must have length between ${agrs[0]} and ${agrs[1]}`
+                between: (...agrs) => `This field must have length between ${agrs[0]} and ${agrs[1]}`,
+                url: () => 'This field must a valid url'
             },
         };
         
@@ -208,6 +209,23 @@ const Validator = class {
 
                 return true;
             },
+            url: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return false;
+                }
+
+                if (typeof this.validationData[data] === 'number') {
+                    return false;
+                }
+
+                const regex = new RegExp(/https?:\/\/[a-z\.]+[a-z\-]+(\.[a-z]{2,5})(\.[a-z]{2,5})?/i);
+
+                if (!regex.test(this.validationData[data])) {
+                    return false;
+                }
+
+                return true;
+            }
         };
     };
 }

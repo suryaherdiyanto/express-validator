@@ -110,3 +110,14 @@ exports.testBetween = function(sample, min=0, max=1, opp = false) {
         expect(validator.rules.between('test', min, max)).to.be.a('boolean').to.be.true;
     }
 }
+
+exports.testUrl = function(sample, opp = false) {
+    let validator = new Validator();
+    validator.build({ test: sample });
+
+    if (!opp) {
+        expect(validator.rules.url('test')).to.be.a('boolean').to.be.false;
+    } else {
+        expect(validator.rules.url('test')).to.be.a('boolean').to.be.true;
+    }
+}
