@@ -6,7 +6,7 @@ a simple validator package for validating your form requests.
 
 # USAGE
 
-### A Basic Setup
+## A Basic Setup
 ```javascript
 const express = require('express');
 const { validation } = require('express-validator');
@@ -14,8 +14,8 @@ const { validation } = require('express-validator');
 express.use(validation());
 ```
 
-### Validating request
-When initial setup was done, the validator instance also available on `req` object. You can build your validation rule using `req.validator` instance.
+## Validating request
+When initial setup was done, the validator instance also available on `req` object. You can build your validation rule using `req.validator` object.
 for instance :
 ```javascript
 app.post('/validation', function(req, res) {
@@ -50,7 +50,7 @@ The `validator.validateSync` will validate all given fields and fill the error m
 
 > If you working with session library like [express-session](https://github.com/expressjs/session) is highly recommended using the `validate()` method, it will return promise to make sure all validation errors is saved to session object.<br><br>
 
-#### Example validation with session
+### Example validation with session
 ```javascript
 const { validation }  = require('./index');
 const app = express();
@@ -96,7 +96,7 @@ app.post('/validation-session', function(req, res) {
 app.listen(3000);
 ```
 <br>
-You can access `validationErrors` object out of the box in view file for example
+You can access `validationErrors` object out of the box in view file for example :
 
 ```html
 <% if(validationErrors) { %>
@@ -110,20 +110,24 @@ this `validationErrors` object stored in `res.locals` object it will flashed fro
 <br>
 
 ## Available Validation Rules
-- requried
-- max:number_of_max_value
-- min:number_of_min_value
-- string
-- numeric
-- alpha
-- alpha_numeric
-- email
-- integer
-- optional
+| Rule Name | Parameters | Descriptions |
+|-----------|------------|-------------|
+| requried  | none       | Field under this rule must be filled in |
+| max       | *max_value*| Field must be have maximum value at given parameter, example usage with parameter `max:10` -> *if string passed it will match length of given string*
+| min       | *min_value*| Field must be have minimum value at given parameter, example usage with parameter `min:10` -> *if string passed it will match length of given string*
+| string    | none       | Field under this rule must be type of string |
+| numeric   | none       | Field under this rule must be numeric value |
+| alpha     | none       | Field under this rule must be alphabetic character |
+| alpha_numeric | none | Field under this rule must be alphabetic and numeric value |
+| email | none | Field under this rule must be valid email |
+| integer | none | Field under this rule must be an integer value |
+| optional | none | This rule allow some field to be empty |
+| between | *min*,*max* | Field under this rule must have value between given parameters, example usage with parameter `between:5,20` |
+| url | none | Field under this rule must be valid url |
 
 <br>
 
-## Available Methods
+## API Reference
 | Method Name | Parameters | Return Value | Description                                         |
 |-------------|------------|--------------|--------------                                        |
 | `build()`| none       | validator instance      | initiate the validation. |
@@ -131,4 +135,5 @@ this `validationErrors` object stored in `res.locals` object it will flashed fro
 | `flashError()`| none       | void      | store and receive validation messages from the session.|
 | `getAllErrors()`| none       | objects      | return all errors for each field.|
 | `getError()`| field_name       | object      | return validation errors for specified field.|
-| `validate()`| none       | void      | running the validation process.|
+| `validate()`| none       | Promise      | promise based validation process, it will store validation error messages on session storage |
+| `validateSync()`| none       | void      | validation proses without promise |
