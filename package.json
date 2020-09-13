@@ -1,6 +1,6 @@
 {
   "name": "@kodinggen/express-validator",
-  "version": "1.0.0-alpha",
+  "version": "1.0.1",
   "description": "validation package for express application",
   "main": "index.js",
   "directories": {
