@@ -42,5 +42,44 @@ describe('express integration', function() {
                 expect(response.status).to.be.equal(200);
                 expect(response.text).to.be.equal('validator testing');
             });
-    })
+    });
+
+    it('validation fail with validation errors message stored in session', function(done) {
+        chai.request('http://localhost:3000')
+            .post('/validation-session')
+            .send({
+                username: 'johndoe',
+                email: 'myjohndoe.com',
+                age: '20',
+                description: 'this is a sample description'
+            })
+            .then(function(response) {
+                expect(response.status).to.be.equal(425);
+                expect(response).to.be.json;
+                expect(response.body).to.have.property('email').have.lengthOf(1);
+                expect(response.body).to.have.property('age').have.lengthOf(1);
+
+                done();
+            }).catch(function(error) {
+                throw error;
+            });
+    });
+
+    it('validation session success', function(done) {
+        chai.request('http://localhost:3000')
+            .post('/validation-session')
+            .send({
+                username: 'johndoe',
+                email: 'my@johndoe.com',
+                age: 20,
+                description: 'this is a sample description'
+            })
+            .then(function(response) {
+                expect(response.status).to.be.equal(200);
+                expect(response.text).to.be.equal('validation success');
+                done();
+            }).catch(function(error) {
+                throw error;
+            });
+    });
 });

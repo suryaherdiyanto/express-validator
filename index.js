@@ -16,121 +16,123 @@ const Validator = class {
         this.error = {
             messages: {
                 required: () => 'This field is required',
-                max: (len) => `Maximum length of this field is ${len}`,
-                min: (len) => `Minimum length of this field is ${len}`,
+                max: (...agrs) => `Maximum length of this field is ${agrs[0]}`,
+                min: (...agrs) => `Minimum length of this field is ${agrs[0]}`,
                 string: () => 'This field must be a string',
                 numeric: () => 'This field must be a number',
                 alpha: () => 'This field must be character',
                 alpha_numeric: () => 'This field must be an alpha numeric',
                 email: () => 'This field must be a valid email',
                 integer: () => 'This field must be an integer',
+                between: (...agrs) => `This field must have length between ${agrs[0]} and ${agrs[1]}`,
+                url: () => 'This field must a valid url'
             },
         };
         
         this.rules = {
             required: (data) => {
                 if (!this.validationData[data]) {
-                    return true;
+                    return false;
                 }
 
                 if (this.validationData[data] === '' || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             max: (data, len=1) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] === "number") {
                     if (this.validationData[data] > len) {
-                        return true
+                        return false
                     }
                 }
 
                 if(this.validationData[data].length > len) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
 
             },
             min: (data, len=1) => {
                 if (!this.validationData[data] && this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] === "number") {
                     if (this.validationData[data] < len) {
-                        return true;
+                        return false;
                     }
                 }
 
                 if(this.validationData[data].length < len) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
         
             },
             string: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] !== 'string') {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             numeric: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
                 const regex = new RegExp(/^[0-9]+$/);
 
                 if(!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             alpha: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 const regex = new RegExp(/^[a-zA-Z]+$/);
 
                 if(!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             alpha_numeric: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] === 'number') {
-                    return true;
+                    return false;
                 }
 
                 const regex = new RegExp(/^[a-zA-Z0-9_]*$/);
 
                 if(!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             email: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 const sample = this.validationData[data];
@@ -142,41 +144,83 @@ const Validator = class {
                 });
 
                 if (atCount > 1) {
-                    return true;
+                    return false;
                 }
 
                 const regex = new RegExp(/[a-zA-Z0-9]+(@){1}[a-z]+\.([a-z]){2,3}(\.[a-z]{2})?/i);
 
                 if (!regex.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             integer: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
-                    return true;
+                    return false;
                 }
 
                 if (typeof this.validationData[data] !== 'number') {
-                    return true;
+                    return false;
                 }
 
                 const startWithZero = new RegExp(/^0+/);
                 if (startWithZero.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
                 const hasDot = new RegExp(/[\.]+/);
                 if (hasDot.test(this.validationData[data])) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             },
             optional: (data) => {
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
                     
+                    return false;
+                }
+
+                return true;
+            },
+            between: (data, min= 0, max= 1) => {
+                let len = this.validationData[data];
+
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return false;
+                }
+
+                if (typeof this.validationData[data] === 'object') {
+                    return false;
+                }
+
+                if (typeof this.validationData[data] === 'string') {
+                    len = this.validationData[data].length;
+                }
+
+                if (len < min) {
+                    return false;
+                }
+
+                if (len > max) {
+                    return false;
+                }
+
+                return true;
+            },
+            url: (data) => {
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return false;
+                }
+
+                if (typeof this.validationData[data] === 'number') {
+                    return false;
+                }
+
+                const regex = new RegExp(/https?:\/\/[a-z\.]+[a-z\-]+(\.[a-z]{2,5})(\.[a-z]{2,5})?/i);
+
+                if (!regex.test(this.validationData[data])) {
                     return false;
                 }
 
@@ -187,15 +231,15 @@ const Validator = class {
 }
 
 /**
- * Begin validation process after validation build.
+ * Begin validation process for given fields and rules
  * 
- * @param none
- * @return void
+ * @param {none}
+ * @return {void}
  */
-Validator.prototype.validate = function() {
-    
-    const validationKeys = Object.keys(this.validationRules);
 
+Validator.prototype.processValidation = function() {
+    const validationKeys = Object.keys(this.validationRules);
+    
     validationKeys.forEach((key) => {
         const rules = this.validationRules[key].split('|');
         
@@ -205,22 +249,61 @@ Validator.prototype.validate = function() {
 
             if (ruleName.indexOf(':') > 1) {
                 [ruleName, param] = ruleName.split(':');
+
             }
 
-            if(!this.rules[ruleName](key, param) && ruleName === 'optional') {
-                break;
+            if (param !== null && param.indexOf(',') > 1) {
+                let [param1, param2] = param.split(',');
+
+                if (!this.rules[ruleName](key, param1, param2) && ruleName !== 'optional') {
+                    this.fillError(key, ruleName, param1, param2)
+                }
+
+            } else {
+                
+                if(!this.rules[ruleName](key, param) && ruleName === 'optional') {
+                    break;
+                }
+    
+                if (!this.rules[ruleName](key, param) && ruleName !== 'optional') {
+                    this.fillError(key, ruleName, param);
+                }
             }
 
-            if (this.rules[ruleName](key, param) && ruleName !== 'optional') {
-                this.fillError(key, ruleName, param);
-            }
         }
         
     });
+}
 
-    if (this.session) {
-        this.session.validationErrors = this.getAllErrors();
-    }
+/**
+ * Begin validation with promise for session store.
+ * 
+ * @param none
+ * @return {Promise}
+ */
+Validator.prototype.validate = function() {
+    
+    return new Promise((resolve, reject) => {
+        
+        this.processValidation();
+    
+        if (this.session) {
+            this.session.validationErrors = this.getAllErrors();
+            this.session.save(() => resolve( this.hasError() ));
+        } else {
+            reject('The session object not defined, use validateSync instead');
+        }
+    });
+}
+
+/**
+ * Validate without using cache or any other storage that require promise action
+ * 
+ * @param{none}
+ * @return{void}
+ */
+Validator.prototype.validateSync = function() {
+    this.processValidation();
 }
 
 /**
@@ -230,16 +313,28 @@ Validator.prototype.validate = function() {
  * @return {array}
  */
 Validator.prototype.getError = function(name) {
-    return this.validationErrors[name];
+    if (this.validationErrors[name]) {
+        return this.validationErrors[name][0];
+    }
+
+    return '';
 }
 
 /**
  * Return all validation error messages for each field.
  * 
- * @param {none}
+ * @param {string} key
  * @return {objects}
  */
-Validator.prototype.getAllErrors = function() {
+Validator.prototype.getAllErrors = function(key = null) {
+    if (key) {
+        if (this.validationErrors[key]) {
+            return this.validationErrors[key]
+        }
+
+        return [];
+    }
+
     return this.validationErrors;
 }
 
@@ -264,11 +359,18 @@ Validator.prototype.flashErrors = function() {
 /**
  * Check if validation process has error in any fields.
  * 
- * @param {none}
+ * @param {string} key
  * @return {boolean}
  */
-Validator.prototype.hasError = function() {
-    if (Object.keys(this.validationErrors).length > 0) {
+Validator.prototype.hasError = function(key = null) {
+
+    const errorKeys = Object.keys(this.validationErrors);
+
+    if (key) {
+        return errorKeys.some((item) => item === key);    
+    }
+
+    if (errorKeys.length > 0) {
         return true;
     }
 
@@ -283,11 +385,13 @@ Validator.prototype.hasError = function() {
  * @param {mix} param
  * @return {void} 
  */
-Validator.prototype.fillError = function(fieldName, validationKey, param=null) {
+Validator.prototype.fillError = function() {
+    const [fieldName, validationKey, param1, param2] = arguments;
+
     if (!this.validationErrors[fieldName]) {
-        this.validationErrors[fieldName] = [this.error.messages[validationKey](param)];
+        this.validationErrors[fieldName] = [this.error.messages[validationKey](param1, param2)];
     } else {
-        this.validationErrors[fieldName].push(this.error.messages[validationKey](param));
+        this.validationErrors[fieldName].push(this.error.messages[validationKey](param1, param2));
     }
 }
 
@@ -325,6 +429,10 @@ const validation = function() {
 
         if (!req.validator) {
             req.validator = new Validator(req.session);
+        }
+
+        if (!res.locals.validationErrors) {
+            res.locals.validationErrors = req.validator.flashErrors();
         }
     
         next();

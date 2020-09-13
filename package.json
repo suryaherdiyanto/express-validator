@@ -18,7 +18,8 @@
     "mocha": "^8.1.1"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha ./test/test.js",
+    "test-http": "mocha ./test/http.js",
     "start": "node server.js"
   },
   "repository": {
