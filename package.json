@@ -7,20 +7,20 @@
     "test": "test"
   },
   "dependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "ejs": "^3.1.5",
     "express-session": "^1.17.1",
-    "express": "^4.17.1",
-    "nodemon": "^2.0.4"
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "mocha": "^8.1.1"
+    "mocha": "^8.1.1",
+    "nodemon": "^2.0.4",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "ejs": "^3.1.5"
   },
   "scripts": {
     "test": "mocha ./test/test.js",
     "test-http": "mocha ./test/http.js",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
