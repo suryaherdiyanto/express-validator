@@ -15,17 +15,18 @@ const Validator = class {
 
         this.error = {
             messages: {
-                required: () => 'This field is required',
-                max: (...agrs) => `Maximum length of this field is ${agrs[0]}`,
-                min: (...agrs) => `Minimum length of this field is ${agrs[0]}`,
-                string: () => 'This field must be a string',
-                numeric: () => 'This field must be a number',
-                alpha: () => 'This field must be character',
-                alpha_numeric: () => 'This field must be an alpha numeric',
-                email: () => 'This field must be a valid email',
-                integer: () => 'This field must be an integer',
-                between: (...agrs) => `This field must have length between ${agrs[0]} and ${agrs[1]}`,
-                url: () => 'This field must a valid url'
+                required: (fieldName) => `The ${fieldName.replace('_', ' ')} field is required`,
+                max: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must be have maximum length of ${args[0]}`,
+                min: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must be have minimum length of ${args[0]}`,
+                string: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be a string`,
+                numeric: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be a number`,
+                alpha: (fieldName) => `The ${fieldName} field must be character`,
+                alpha_numeric: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be an alpha numeric`,
+                email: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be a valid email`,
+                integer: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be an integer`,
+                between: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must have length between ${args[0]} and ${args[1]}`,
+                url: (fieldName) => `The ${fieldName.replace('_', ' ')} field must a valid url`,
+                enum: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must be either one of these options ${args.join(',')}`
             },
         };
         
@@ -41,36 +42,40 @@ const Validator = class {
 
                 return true;
             },
-            max: (data, len=1) => {
+            max: (data, args) => {
+                const sample = args[0];
+
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
                     return false;
                 }
 
                 if (typeof this.validationData[data] === "number") {
-                    if (this.validationData[data] > len) {
+                    if (this.validationData[data] > sample) {
                         return false
                     }
                 }
 
-                if(this.validationData[data].length > len) {
+                if(this.validationData[data].length > sample) {
                     return false;
                 }
 
                 return true;
 
             },
-            min: (data, len=1) => {
+            min: (data, args = []) => {
+                const sample = Number(args[0]);
+
                 if (!this.validationData[data] && this.validationData[data] === undefined) {
                     return false;
                 }
 
                 if (typeof this.validationData[data] === "number") {
-                    if (this.validationData[data] < len) {
+                    if (this.validationData[data] < sample) {
                         return false;
                     }
                 }
 
-                if(this.validationData[data].length < len) {
+                if(this.validationData[data].length < sample) {
                     return false;
                 }
 
@@ -184,12 +189,15 @@ const Validator = class {
 
                 return true;
             },
-            between: (data, min= 0, max= 1) => {
+            between: (data, args = []) => {
                 let len = this.validationData[data];
-
+                
                 if (!this.validationData[data] || this.validationData[data] === undefined) {
                     return false;
                 }
+                
+                let [min, max] = args;
+
 
                 if (typeof this.validationData[data] === 'object') {
                     return false;
@@ -225,7 +233,23 @@ const Validator = class {
                 }
 
                 return true;
-            }
+            },
+            enum: (data, args = []) => {
+
+                if (!this.validationData[data] || this.validationData[data] === undefined) {
+                    return false;
+                }
+
+                if (args.length === 0) {
+                    return false;
+                }
+
+                if (args.indexOf(this.validationData[data]) === -1) {
+                    return false;
+                }
+
+                return true;
+            },
         };
     };
 }
@@ -252,21 +276,21 @@ Validator.prototype.processValidation = function() {
 
             }
 
-            if (param !== null && param.indexOf(',') > 1) {
-                let [param1, param2] = param.split(',');
+            if (param !== null && param.indexOf(',') > 0) {
+                let params = param.split(',');
 
-                if (!this.rules[ruleName](key, param1, param2) && ruleName !== 'optional') {
-                    this.fillError(key, ruleName, param1, param2)
+                if (!this.rules[ruleName](key, params) && ruleName !== 'optional') {
+                    this.fillError(key, ruleName, params);
                 }
 
             } else {
                 
-                if(!this.rules[ruleName](key, param) && ruleName === 'optional') {
+                if(!this.rules[ruleName](key, [param]) && ruleName === 'optional') {
                     break;
                 }
     
-                if (!this.rules[ruleName](key, param) && ruleName !== 'optional') {
-                    this.fillError(key, ruleName, param);
+                if (!this.rules[ruleName](key, [param]) && ruleName !== 'optional') {
+                    this.fillError(key, ruleName, [param]);
                 }
             }
 
@@ -385,13 +409,12 @@ Validator.prototype.hasError = function(key = null) {
  * @param {mix} param
  * @return {void} 
  */
-Validator.prototype.fillError = function() {
-    const [fieldName, validationKey, param1, param2] = arguments;
+Validator.prototype.fillError = function(fieldName, validationKey, params) {
 
     if (!this.validationErrors[fieldName]) {
-        this.validationErrors[fieldName] = [this.error.messages[validationKey](param1, param2)];
+        this.validationErrors[fieldName] = [this.error.messages[validationKey](fieldName, params)];
     } else {
-        this.validationErrors[fieldName].push(this.error.messages[validationKey](param1, param2));
+        this.validationErrors[fieldName].push(this.error.messages[validationKey](fieldName, params));
     }
 }
 

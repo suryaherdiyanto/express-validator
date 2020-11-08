@@ -12,7 +12,8 @@ const {
     testInteger,
     testAlphaNumeric,
     testBetween,
-    testUrl
+    testUrl,
+    testEnum
  } = require('./unit');
 const { Validator } = require('../index');
 
@@ -28,41 +29,41 @@ describe('testing unit all validation rules', function() {
     });
 
     it('test max rule with sample data type is null return false if null passed', function() {
-        testMax(null, 10);
+        testMax(null, [10]);
     });
     it('test max rule with sample data type is undefined return false if undefined passed', function() {
-        testMax(undefined, 10);
+        testMax(undefined, [10]);
     });
     it('test max rule with sample data type is number return false if sample data value greather than given parameter', function() {
-        testMax(11, 10);
+        testMax(11, [10]);
     });
     it('test max rule with sample data type is number return true if sample data have same length with given parameter', function() {
-        testMax(10, 10, true);
+        testMax(10, [10], true);
     });
     it('test max rule with sample data type is string return false if sample data length is grather than given parameter', function() {
-        testMax('sample data', 10);
+        testMax('sample data', [10]);
     });
     it('test max rule with sample data type is string return true if sample data length is lesser than given parameter', function() {
-        testMax('sample', 10, true);
+        testMax('sample', [10], true);
     });
 
     it('test min rule with sample data type is null return false if null passed', function() {
-        testMax(null, 10);
+        testMax(null, [10]);
     });
     it('test min rule with sample data type is undefined return false if undefined passed', function() {
-        testMax(undefined, 10);
+        testMax(undefined, [10]);
     });
     it('test min rule with sample data type is number return false if sample data value lesser than given parameter', function() {
-        testMin(5, 10);
+        testMin(5, [10]);
     });
     it('test min rule with sample data type is number return true if sample data have same length with given parameter', function() {
-        testMin(5, 5, true);
+        testMin(5, [5], true);
     });
     it('test min rule with sample data type is string return false if sample data length is lesser than given parameter', function() {
-        testMin('sample', 10);
+        testMin('sample', [10]);
     });
     it('test min rule with sample data type is string return true if sample data length is greather than given parameter', function() {
-        testMin('sample data', 5, true);
+        testMin('sample data', [5], true);
     });
 
     it('test string rule with sample data type is string return false if nothing passed', function() {
@@ -174,60 +175,60 @@ describe('testing unit all validation rules', function() {
     });
 
     it('test between rule with sample data null and undefined, will produce false', function() {
-        testBetween(null);
-        testBetween(undefined);
+        testBetween(null, [0, 1]);
+        testBetween(undefined, [0, 1]);
     });
     it('test between rule with sample data string exceed min and max value, will produce false', function() {
         let min=6;
         let max=12;
 
-        testBetween('john', min, max);
-        testBetween('alex', min, max);
-        testBetween('jenn', min, max);
-        testBetween('june', min, max);
-        testBetween('broo', min, max);
-        testBetween('Alexander Grahambell', min, max);
-        testBetween('Galileo Galilei', min, max);
-        testBetween('Thomas Alfa Edison', min, max);
+        testBetween('john', [min, max]);
+        testBetween('alex', [min, max]);
+        testBetween('jenn', [min, max]);
+        testBetween('june', [min, max]);
+        testBetween('broo', [min, max]);
+        testBetween('Alexander Grahambell', [min, max]);
+        testBetween('Galileo Galilei', [min, max]);
+        testBetween('Thomas Alfa Edison', [min, max]);
     });
     it('test between rule with sample data number exceed min and max value, will produce false', function() {
         let min=8;
         let max=25;
 
-        testBetween(30, min, max);
-        testBetween(0, min, max);
-        testBetween(-1, min, max);
-        testBetween(2, min, max);
-        testBetween(7.5, min, max);
-        testBetween(7.9, min, max);
-        testBetween(30.1, min, max);
-        testBetween(25.1, min, max);
+        testBetween(30, [min, max]);
+        testBetween(0, [min, max]);
+        testBetween(-1, [min, max]);
+        testBetween(2, [min, max]);
+        testBetween(7.5, [min, max]);
+        testBetween(7.9, [min, max]);
+        testBetween(30.1, [min, max]);
+        testBetween(25.1, [min, max]);
     });
     it('test between rule with sample data string in between min and max value, will produce true', function() {
         let min=2;
         let max=20;
 
-        testBetween('john', min, max, true);
-        testBetween('alex', min, max, true);
-        testBetween('jenn', min, max, true);
-        testBetween('june', min, max, true);
-        testBetween('broo', min, max, true);
-        testBetween('Alexander Grahambell', min, max, true);
-        testBetween('Galileo Galilei', min, max, true);
-        testBetween('Thomas Alfa Edison', min, max, true);
+        testBetween('john', [min, max], true);
+        testBetween('alex', [min, max], true);
+        testBetween('jenn', [min, max], true);
+        testBetween('june', [min, max], true);
+        testBetween('broo', [min, max], true);
+        testBetween('Alexander Grahambell', [min, max], true);
+        testBetween('Galileo Galilei', [min, max], true);
+        testBetween('Thomas Alfa Edison', [min, max], true);
     });
     it('test between rule with sample data number in between min and max value, will produce true', function() {
         let min=8;
         let max=25;
 
-        testBetween(8.1, min, max, true);
-        testBetween(12, min, max, true);
-        testBetween(20, min, max, true);
-        testBetween(22, min, max, true);
-        testBetween(20.98, min, max, true);
-        testBetween(17, min, max, true);
-        testBetween(11, min, max, true);
-        testBetween(9, min, max, true);
+        testBetween(8.1, [min, max], true);
+        testBetween(12, [min, max], true);
+        testBetween(20, [min, max], true);
+        testBetween(22, [min, max], true);
+        testBetween(20.98, [min, max], true);
+        testBetween(17, [min, max], true);
+        testBetween(11, [min, max], true);
+        testBetween(9, [min, max], true);
     });
     it('test url rule with null and undefined passed, will produce false', function() {
         testUrl(null);
@@ -253,6 +254,17 @@ describe('testing unit all validation rules', function() {
         testUrl('http://www.awesome.co.au', true);
     });
 
+    it('test enum rule no enum set passed or sample not in enum set, will produce false', function() {
+        testEnum('online', []);
+        testEnum('active', ['online', 'not online']);
+        testEnum('passed', ['not passed']);
+    });
+    it('text enum rule sample in one of enum set, will produce true', function() {
+        testEnum('online', ['online', 'not online'], true);
+        testEnum('active', ['not active', 'disabled', 'active'], true);
+        testEnum('deleted', ['present', 'deleted', 'passed'], true);
+    })
+
 });
 
 describe('testing validator must working properly', function() {
@@ -268,10 +280,10 @@ describe('testing validator must working properly', function() {
         expect(isError).to.be.a('boolean');
         expect(errors).to.have.property('name');
         expect(errors.name).to.be.an('array').have.lengthOf(1);
-        expect(errors.name[0]).to.be.equal('This field is required');
+        expect(errors.name[0]).to.be.equal('The name field is required');
 
         expect(validator.hasError('name')).to.be.true;
-        expect(validator.getError('name')).equal('This field is required');
+        expect(validator.getError('name')).equal('The name field is required');
         expect(validator.getAllErrors('name')).have.lengthOf(1);
     });
     
@@ -297,7 +309,8 @@ describe('testing validator must working properly', function() {
             age: 20,
             mark: 70,
             note: 'the sample text',
-            website_url: 'https://www.my-awesome-website.com'
+            website_url: 'https://www.my-awesome-website.com',
+            status: 'active'
 
         }, 
         { 
@@ -307,7 +320,8 @@ describe('testing validator must working properly', function() {
             age: 'required|integer|max:25',
             mark: 'required|integer|between:60,95',
             website_url: 'optional|string|url',
-            note: 'optional|string'
+            note: 'optional|string',
+            status: 'enum:active,not_active,process'
         }
         );
 
@@ -351,10 +365,10 @@ describe('testing validator must working properly', function() {
 
         expect(isError).to.be.true;
         expect(errors).have.property('website_url').have.lengthOf(1);
-        expect(errors.website_url[0]).equal('This field must a valid url');
+        expect(errors.website_url[0]).equal('The website url field must a valid url');
     })
 
-    it('validation with multiple field and rules with error in email, password, age, mark and note fields', function() {
+    it('validation with multiple field and rules with error in email, password, age, mark, status and note fields', function() {
         let validator = new Validator();
         validator.build(
         {     
@@ -363,7 +377,8 @@ describe('testing validator must working properly', function() {
             email: 'johndoe@example',
             age: '20',
             mark: 70,
-            note: 123123
+            note: 123123,
+            status: 'unknown'
 
         }, 
         { 
@@ -372,7 +387,8 @@ describe('testing validator must working properly', function() {
             email: 'required|string|email',
             age: 'required|integer|max:25',
             mark: 'required|integer|between:80,90',
-            note: 'optional|string'
+            note: 'optional|string',
+            status: 'enum:pending,processed,cancel'
         }
         );
 
@@ -391,11 +407,13 @@ describe('testing validator must working properly', function() {
         expect(validator.hasError('password')).to.be.true;
         expect(validator.hasError('age')).to.be.true;
         expect(validator.hasError('mark')).to.be.true;
+        expect(validator.hasError('status')).to.be.true;
 
-        expect(validator.getError('email')).to.equal('This field must be a valid email');
-        expect(validator.getError('password')).to.equal('Minimum length of this field is 6');
-        expect(validator.getError('age')).to.equal('This field must be an integer');
-        expect(validator.getError('mark')).to.equal('This field must have length between 80 and 90');
+        expect(validator.getError('email')).to.equal('The email field must be a valid email');
+        expect(validator.getError('password')).to.equal('The password field must be have minimum length of 6');
+        expect(validator.getError('age')).to.equal('The age field must be an integer');
+        expect(validator.getError('mark')).to.equal('The mark field must have length between 80 and 90');
+        expect(validator.getError('status')).to.equal('The status field must be either one of these options pending,processed,cancel')
 
         expect(validator.getAllErrors('email')).have.lengthOf(1);
         expect(validator.getAllErrors('password')).have.lengthOf(1);

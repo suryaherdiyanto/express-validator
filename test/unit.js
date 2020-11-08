@@ -100,14 +100,14 @@ exports.testInteger = function(sample, opp = false) {
     }
 }
 
-exports.testBetween = function(sample, min=0, max=1, opp = false) {
+exports.testBetween = function(sample, [min, max], opp = false) {
     let validator = new Validator();
     validator.build({ test: sample });
 
     if (!opp) {
-        expect(validator.rules.between('test', min, max)).to.be.a('boolean').to.be.false;
+        expect(validator.rules.between('test', [min, max])).to.be.a('boolean').to.be.false;
     } else {
-        expect(validator.rules.between('test', min, max)).to.be.a('boolean').to.be.true;
+        expect(validator.rules.between('test', [min, max])).to.be.a('boolean').to.be.true;
     }
 }
 
@@ -119,5 +119,16 @@ exports.testUrl = function(sample, opp = false) {
         expect(validator.rules.url('test')).to.be.a('boolean').to.be.false;
     } else {
         expect(validator.rules.url('test')).to.be.a('boolean').to.be.true;
+    }
+}
+
+exports.testEnum = function(sample, enumSet = [], opp = false) {
+    let validator = new Validator();
+    validator.build({ test: sample });
+
+    if (!opp) {
+        expect(validator.rules.enum('test', enumSet)).to.be.a('boolean').to.be.false;
+    } else {
+        expect(validator.rules.enum('test', enumSet)).to.be.a('boolean').to.be.true;
     }
 }
