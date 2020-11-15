@@ -13,20 +13,94 @@ const Validator = class {
 
         this.validationErrors = {};
 
+        this.messages = {},
+
         this.error = {
             messages: {
-                required: (fieldName) => `The ${fieldName.replace('_', ' ')} field is required`,
-                max: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must be have maximum length of ${args[0]}`,
-                min: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must be have minimum length of ${args[0]}`,
-                string: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be a string`,
-                numeric: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be a number`,
-                alpha: (fieldName) => `The ${fieldName} field must be character`,
-                alpha_numeric: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be an alpha numeric`,
-                email: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be a valid email`,
-                integer: (fieldName) => `The ${fieldName.replace('_', ' ')} field must be an integer`,
-                between: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must have length between ${args[0]} and ${args[1]}`,
-                url: (fieldName) => `The ${fieldName.replace('_', ' ')} field must a valid url`,
-                enum: (fieldName, args = []) => `The ${fieldName.replace('_', ' ')} field must be either one of these options ${args.join(',')}`
+                required: (fieldName) => {
+                    if (typeof(this.messages.required) === 'function') {
+                        return this.messages.required(fieldName);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field is required`;
+                },
+                max: (fieldName, args = []) => {
+                    if (typeof(this.messages.max) === 'function') {
+                        return this.messages.max(fieldName, args);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be have maximum length of ${args[0]}`;
+                },
+                min: (fieldName, args = []) => {
+                    if (typeof(this.messages.min) === 'function') {
+                        return this.messages.min(fieldName, args);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be have minimum length of ${args[0]}`;
+                },
+                string: (fieldName) => {
+                    if (typeof(this.messages.string) === 'function') {
+                        return this.messages.string(fieldName);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be a string`;
+                },
+                numeric: (fieldName) => {
+                    if (typeof(this.messages.numeric) === 'function') {
+                        return this.messages.numberic(fieldName);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be a number`;
+                },
+                alpha: (fieldName) => {
+                    if (typeof(this.messages.alpha) === 'function') {
+                        return this.messages.alpha(fieldName)
+                    }
+
+                    return `The ${fieldName} field must be character`;
+                },
+                alpha_numeric: (fieldName) => {
+                    if (typeof(this.messages.alpha_numeric) === 'function') {
+                        return this.messages.alpha_numeric(fieldName);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be an alpha numeric`;
+                },
+                email: (fieldName) => {
+                    if (typeof(this.messages.email) === 'function') {
+                        return this.messages.email(fieldName);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be a valid email`;
+                },
+                integer: (fieldName) => {
+                    if (typeof(this.messages.integer) === 'function') {
+                        return this.messages.integer(fieldName);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be an integer`;
+                },
+                between: (fieldName, args = []) => {
+                    if (typeof(this.messages.between) === 'function') {
+                        return this.messages.between(fieldName, args);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must have length between ${args[0]} and ${args[1]}`;
+                },
+                url: (fieldName) => {
+                    if (typeof(this.messages.url) === 'function') {
+                        return this.messages.url(fieldName);
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must a valid url`;
+                },
+                enum: (fieldName, args = []) => {
+                    if (typeof(this.messages.enum) === 'function') {
+                        return this.messages.enum;
+                    }
+
+                    return `The ${fieldName.replace('_', ' ')} field must be either one of these options ${args.join(',')}`;
+                }
             },
         };
         
@@ -297,6 +371,8 @@ Validator.prototype.processValidation = function() {
         }
         
     });
+
+    this.messages = {};
 }
 
 /**
@@ -443,6 +519,20 @@ Validator.prototype.cleanUp = function() {
     this.validationData = null;
     this.validationRules = null;
     this.validationErrors = {};
+}
+
+/**
+ * Set custom error messages
+ * @param {object} errorMessages 
+ */
+
+Validator.prototype.setErrorMessages = function(errorMessages = {}) {
+    if (typeof(errorMessages) !== 'object') {
+        console.log('Error messages must be an object');
+        return;
+    }
+
+   this.messages = errorMessages;
 }
 
 

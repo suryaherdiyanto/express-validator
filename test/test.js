@@ -267,6 +267,50 @@ describe('testing unit all validation rules', function() {
 
 });
 
+describe('testing custom error message feature', function() {
+    it('assign error message objects from validator instance', function() {
+        let validator = new Validator();
+
+        validator.setErrorMessages({
+            integer: (fieldName) => `${fieldName} must integer`,
+            string: (fieldName) => `${fieldName} must stirng `
+        });
+
+        expect(validator.messages).have.ownProperty('integer').to.be.a('function');
+        expect(validator.messages).have.ownProperty('string').to.be.a('function');
+    });
+
+    it('check the error message return a correct message', function() {
+        let validator = new Validator();
+
+        validator.setErrorMessages({
+            required: (fieldName) => `${fieldName} required`,
+            string: (fieldName) => `${fieldName} must string`,
+            min: (fieldName, args) => `${fieldName} minimal length ${args[0]}`
+        });
+
+        validator.build({
+            name: '',
+            password: '123'
+        },{
+            username: 'required|string',
+            password: 'required|min:6'
+        });
+
+        validator.validateSync();
+
+        let errors = validator.getAllErrors();
+
+        expect(validator.hasError()).to.be.a('boolean');
+        expect(validator.hasError()).to.be.true;
+        expect(errors).have.ownProperty('username').have.lengthOf(2);
+        expect(errors).have.ownProperty('password').have.lengthOf(1);
+        expect(errors.username[0]).equals('username required');
+        expect(errors.username[1]).equals('username must string');
+        expect(errors.password[0]).equals('password minimal length 6');
+    });
+});
+
 describe('testing validator must working properly', function() {
     it('validateSync required if none passed', function() {
         let validator = new Validator();
