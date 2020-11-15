@@ -309,6 +309,73 @@ describe('testing custom error message feature', function() {
         expect(errors.username[1]).equals('username must string');
         expect(errors.password[0]).equals('password minimal length 6');
     });
+
+    it('test all custom error messages for all rules', function() {
+        let validator = new Validator();
+
+        validator.setErrorMessages({
+            required: (fieldName) => `${fieldName} required`,
+            min: (fieldName, args) => `${fieldName} minimal length ${args[0]}`,
+            max: (fieldName, args) => `${fieldName} maximal length ${args[0]}`,
+            string: (fieldName) => `${fieldName} must string`,
+            numeric: (fieldName) => `${fieldName} must numeric`,
+            alpha: (fieldName) => `${fieldName} must alpha`,
+            alpha_numeric: (fieldName) => `${fieldName} must alpha_numeric`,
+            email: (fieldName) => `${fieldName} must email`,
+            integer: (fieldName) => `${fieldName} must integer`,
+            between: (fieldName, args) => `${fieldName} must between ${args[0]} and ${args[1]}`,
+            url: (fieldName) => `${fieldName} must url`,
+            enum: (fieldName, args) => `${fieldName} enum for this options ${args.join(',')}`,
+        });
+
+        validator.build({
+            name: '',
+            email: 'testing',
+            phone: 'abcd',
+            age: '20',
+            username: 0,
+            hobby: 'ride',
+            salary: 100,
+            website: 'http://'
+        },{
+            name: 'required|alpha|alpha_numeric',
+            email: 'email',
+            phone: 'numeric',
+            age: 'integer',
+            username: 'string|max:5',
+            hobby: 'enum:cycling,gaming',
+            salary: 'min:150|between:150,200',
+            website: 'url'
+        });
+
+        validator.validateSync();
+
+        let errors = validator.getAllErrors();
+        expect(validator.hasError()).to.be.a('boolean');
+        expect(validator.hasError()).to.be.true;
+        expect(errors).have.ownProperty('name').have.lengthOf(3);
+        expect(errors).have.ownProperty('email').have.lengthOf(1);
+        expect(errors).have.ownProperty('phone').have.lengthOf(1);
+        expect(errors).have.ownProperty('age').have.lengthOf(1);
+        expect(errors).have.ownProperty('username').have.lengthOf(2);
+        expect(errors).have.ownProperty('hobby').have.lengthOf(1);
+        expect(errors).have.ownProperty('salary').have.lengthOf(2);
+        expect(errors).have.ownProperty('website').have.lengthOf(1);
+
+        expect(errors.name[0]).equals('name required');
+        expect(errors.name[1]).equals('name must alpha');
+        expect(errors.name[2]).equals('name must alpha_numeric');
+        expect(errors.email[0]).equals('email must email');
+        expect(errors.phone[0]).equals('phone must numeric');
+        expect(errors.age[0]).equals('age must integer');
+        expect(errors.username[0]).equals('username must string');
+        expect(errors.username[1]).equals('username maximal length 5');
+        expect(errors.hobby[0]).equals('hobby enum for this options cycling,gaming');
+        expect(errors.salary[0]).equals('salary minimal length 150');
+        expect(errors.salary[1]).equals('salary must between 150 and 200');
+        expect(errors.website[0]).equals('website must url');
+
+    });
 });
 
 describe('testing validator must working properly', function() {

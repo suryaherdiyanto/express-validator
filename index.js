@@ -47,7 +47,7 @@ const Validator = class {
                 },
                 numeric: (fieldName) => {
                     if (typeof(this.messages.numeric) === 'function') {
-                        return this.messages.numberic(fieldName);
+                        return this.messages.numeric(fieldName);
                     }
 
                     return `The ${fieldName.replace('_', ' ')} field must be a number`;
@@ -96,7 +96,7 @@ const Validator = class {
                 },
                 enum: (fieldName, args = []) => {
                     if (typeof(this.messages.enum) === 'function') {
-                        return this.messages.enum;
+                        return this.messages.enum(fieldName, args);
                     }
 
                     return `The ${fieldName.replace('_', ' ')} field must be either one of these options ${args.join(',')}`;
