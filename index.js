@@ -400,16 +400,6 @@ Validator.prototype.validate = function() {
 }
 
 /**
- * Validate without using cache or any other storage that require promise action
- * 
- * @param{none}
- * @return{void}
- */
-Validator.prototype.validateSync = function() {
-    this.processValidation();
-}
-
-/**
  * Get validation error messages for given field name.
  * 
  * @param {string} name 
