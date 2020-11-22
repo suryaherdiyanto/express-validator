@@ -386,16 +386,21 @@ Validator.prototype.processValidation = function() {
  */
 Validator.prototype.validate = function() {
     
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         
         this.processValidation();
-    
-        if (this.session) {
-            this.session.validationErrors = this.getAllErrors();
-            this.session.save(() => resolve( { data: this.validationData, error: this.hasError() } ));
+
+        let result = {
+            status: (!this.hasError()) ? 'success':'error'
+        };
+
+        if (result.status === 'success') {
+            result.data = this.validationData;
         } else {
-            reject('The session object not defined, use validateSync instead');
+            result.data = this.validationErrors;
         }
+    
+        resolve(result);
     });
 }
 

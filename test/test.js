@@ -280,7 +280,7 @@ describe('testing custom error message feature', function() {
         expect(validator.messages).have.ownProperty('string').to.be.a('function');
     });
 
-    it('check the error message return a correct message', function() {
+    it('check the error message return a correct message', function(done) {
         let validator = new Validator();
 
         validator.setErrorMessages({
@@ -297,20 +297,24 @@ describe('testing custom error message feature', function() {
             password: 'required|min:6'
         });
 
-        validator.validateSync();
+        validator.validate().then(function(result) {
+    
+            expect(result.status).to.be.a('string');
+            expect(result.status).to.be.equal('error');
+            expect(result.data).have.ownProperty('username').have.lengthOf(2);
+            expect(result.data).have.ownProperty('password').have.lengthOf(1);
+            expect(result.data.username[0]).equals('username required');
+            expect(result.data.username[1]).equals('username must string');
+            expect(result.data.password[0]).equals('password minimal length 6');
+        }).catch(function(error) {
+            console.log(error);
+        });
+        
+        done();
 
-        let errors = validator.getAllErrors();
-
-        expect(validator.hasError()).to.be.a('boolean');
-        expect(validator.hasError()).to.be.true;
-        expect(errors).have.ownProperty('username').have.lengthOf(2);
-        expect(errors).have.ownProperty('password').have.lengthOf(1);
-        expect(errors.username[0]).equals('username required');
-        expect(errors.username[1]).equals('username must string');
-        expect(errors.password[0]).equals('password minimal length 6');
     });
 
-    it('test all custom error messages for all rules', function() {
+    it('test all custom error messages for all rules', function(done) {
         let validator = new Validator();
 
         validator.setErrorMessages({
@@ -348,69 +352,80 @@ describe('testing custom error message feature', function() {
             website: 'url'
         });
 
-        validator.validateSync();
+        validator.validate().then(function(result) {
 
-        let errors = validator.getAllErrors();
-        expect(validator.hasError()).to.be.a('boolean');
-        expect(validator.hasError()).to.be.true;
-        expect(errors).have.ownProperty('name').have.lengthOf(3);
-        expect(errors).have.ownProperty('email').have.lengthOf(1);
-        expect(errors).have.ownProperty('phone').have.lengthOf(1);
-        expect(errors).have.ownProperty('age').have.lengthOf(1);
-        expect(errors).have.ownProperty('username').have.lengthOf(2);
-        expect(errors).have.ownProperty('hobby').have.lengthOf(1);
-        expect(errors).have.ownProperty('salary').have.lengthOf(2);
-        expect(errors).have.ownProperty('website').have.lengthOf(1);
+            expect(result.status).to.be.a('string');
+            expect(result.status).to.be.equal('error');
+            expect(result.data).have.ownProperty('name').have.lengthOf(3);
+            expect(result.data).have.ownProperty('email').have.lengthOf(1);
+            expect(result.data).have.ownProperty('phone').have.lengthOf(1);
+            expect(result.data).have.ownProperty('age').have.lengthOf(1);
+            expect(result.data).have.ownProperty('username').have.lengthOf(2);
+            expect(result.data).have.ownProperty('hobby').have.lengthOf(1);
+            expect(result.data).have.ownProperty('salary').have.lengthOf(2);
+            expect(result.data).have.ownProperty('website').have.lengthOf(1);
+    
+            expect(result.data.name[0]).equals('name required');
+            expect(result.data.name[1]).equals('name must alpha');
+            expect(result.data.name[2]).equals('name must alpha_numeric');
+            expect(result.data.email[0]).equals('email must email');
+            expect(result.data.phone[0]).equals('phone must numeric');
+            expect(result.data.age[0]).equals('age must integer');
+            expect(result.data.username[0]).equals('username must string');
+            expect(result.data.username[1]).equals('username maximal length 5');
+            expect(result.data.hobby[0]).equals('hobby enum for this options cycling,gaming');
+            expect(result.data.salary[0]).equals('salary minimal length 150');
+            expect(result.data.salary[1]).equals('salary must between 150 and 200');
+            expect(result.data.website[0]).equals('website must url');
+        }).catch(function(error) {
+            console.log(error);
+        });
+        done();
 
-        expect(errors.name[0]).equals('name required');
-        expect(errors.name[1]).equals('name must alpha');
-        expect(errors.name[2]).equals('name must alpha_numeric');
-        expect(errors.email[0]).equals('email must email');
-        expect(errors.phone[0]).equals('phone must numeric');
-        expect(errors.age[0]).equals('age must integer');
-        expect(errors.username[0]).equals('username must string');
-        expect(errors.username[1]).equals('username maximal length 5');
-        expect(errors.hobby[0]).equals('hobby enum for this options cycling,gaming');
-        expect(errors.salary[0]).equals('salary minimal length 150');
-        expect(errors.salary[1]).equals('salary must between 150 and 200');
-        expect(errors.website[0]).equals('website must url');
 
     });
 });
 
 describe('testing validator must working properly', function() {
-    it('validateSync required if none passed', function() {
+    it('validateSync required if none passed', function(done) {
         let validator = new Validator();
         validator.build({ name: '' }, { name: 'required' });
     
-        validator.validateSync();
-        const isError = validator.hasError();
-        const errors = validator.getAllErrors();
-    
-        expect(isError).to.be.true;
-        expect(isError).to.be.a('boolean');
-        expect(errors).to.have.property('name');
-        expect(errors.name).to.be.an('array').have.lengthOf(1);
-        expect(errors.name[0]).to.be.equal('The name field is required');
+        validator.validate().then(function(result) {
 
-        expect(validator.hasError('name')).to.be.true;
-        expect(validator.getError('name')).equal('The name field is required');
-        expect(validator.getAllErrors('name')).have.lengthOf(1);
+            expect(result.status).to.be.a('string');
+            expect(result.status).to.be.equal('error');
+
+            expect(result.data).to.have.property('name');
+            expect(result.data.name).to.be.an('array').have.lengthOf(1);
+            expect(result.data.name[0]).to.be.equal('The name field is required');
+    
+            expect(validator.hasError('name')).to.be.true;
+            expect(validator.getError('name')).equal('The name field is required');
+            expect(validator.getAllErrors('name')).have.lengthOf(1);
+        }).catch(function(error) {
+            console.log(error);
+        });
+        done();
     });
     
-    it('validateSync required max min with all validations passes', function() {
+    it('validateSync required max min with all validations passes', function(done) {
         let validator = new Validator();
         validator.build({ name: 'surya' }, { name: 'required|max:5|min:2' });
         
-        validator.validateSync();
-        const isError = validator.hasError();
+        validator.validate().then(function(result) {
+
+            expect(result.status).to.be.a('string');
+            expect(result.status).to.equal('success');
+            expect(result.data).haveOwnProperty('name').equal('surya');
+        }).catch(function(error) {
+            console.log(error);
+        });
+        done();
     
-        expect(isError).to.equal(false);
-        expect(isError).to.be.a('boolean');
-        expect(validator.getAllErrors()).not.have.property('name');
     });
 
-    it('validation with multiple field and rules all validation passes', function() {
+    it('validation with multiple field and rules all validation passes', function(done) {
         let validator = new Validator();
         validator.build(
         {     
@@ -436,21 +451,25 @@ describe('testing validator must working properly', function() {
         }
         );
 
-        validator.validateSync();
-        const isError = validator.hasError();
-        const errors = validator.getAllErrors();
+        validator.validate().then(function(result) {
 
-        expect(errors).not.have.property('username');
-        expect(errors).not.have.property('password');
-        expect(errors).not.have.property('email');
-        expect(errors).not.have.property('age');
-        expect(errors).not.have.property('string');
-        expect(errors).not.have.property('mark');
-        expect(errors).not.have.property('website_url');
-        expect(isError).to.be.a('boolean').to.equal(false);
+            expect(result.status).to.be.a('string');
+            expect(result.status).to.be.equal('success');
+    
+            expect(result.data).have.ownProperty('username');
+            expect(result.data).have.ownProperty('password');
+            expect(result.data).have.ownProperty('email');
+            expect(result.data).have.ownProperty('age');
+            expect(result.data).have.ownProperty('note');
+            expect(result.data).have.ownProperty('mark');
+            expect(result.data).have.ownProperty('website_url');
+        }).catch(function(error) {
+            console.log(error);
+        });
+        done();
     });
 
-    it('validation with multiple field and rules with error in url field', function() {
+    it('validation with multiple field and rules with error in url field', function(done) {
         let validator = new Validator();
         validator.build(
         {     
@@ -470,16 +489,20 @@ describe('testing validator must working properly', function() {
         }
         );
 
-        validator.validateSync();
-        const isError = validator.hasError();
-        const errors = validator.getAllErrors();
+        validator.validate().then(function(result) {
 
-        expect(isError).to.be.true;
-        expect(errors).have.property('website_url').have.lengthOf(1);
-        expect(errors.website_url[0]).equal('The website url field must a valid url');
+            expect(result.status).to.be.a('string');
+            expect(result.status).to.be.equal('error');
+
+            expect(result.data).have.property('website_url').have.lengthOf(1);
+            expect(result.data.website_url[0]).equal('The website url field must a valid url');
+        }).catch(function(error) {
+            console.log(error);
+        });
+        done();
     })
 
-    it('validation with multiple field and rules with error in email, password, age, mark, status and note fields', function() {
+    it('validation with multiple field and rules with error in email, password, age, mark, status and note fields', function(done) {
         let validator = new Validator();
         validator.build(
         {     
@@ -503,39 +526,44 @@ describe('testing validator must working properly', function() {
         }
         );
 
-        validator.validateSync();
-        const isError = validator.hasError();
-        const errors = validator.getAllErrors();
+        validator.validate().then(function(result) {
 
-        expect(errors).does.not.have.property('username');
-        expect(errors).have.property('password');
-        expect(errors).have.property('email');
-        expect(errors).have.property('age');
-        expect(errors).have.property('mark');
-        expect(errors).have.property('note');
+            expect(result.status).to.be.a('string');
+            expect(result.status).to.be.equal('error');
+    
+            expect(result.data).does.not.have.property('username');
 
-        expect(validator.hasError('email')).to.be.true;
-        expect(validator.hasError('password')).to.be.true;
-        expect(validator.hasError('age')).to.be.true;
-        expect(validator.hasError('mark')).to.be.true;
-        expect(validator.hasError('status')).to.be.true;
-
-        expect(validator.getError('email')).to.equal('The email field must be a valid email');
-        expect(validator.getError('password')).to.equal('The password field must be have minimum length of 6');
-        expect(validator.getError('age')).to.equal('The age field must be an integer');
-        expect(validator.getError('mark')).to.equal('The mark field must have length between 80 and 90');
-        expect(validator.getError('status')).to.equal('The status field must be either one of these options pending,processed,cancel')
-
-        expect(validator.getAllErrors('email')).have.lengthOf(1);
-        expect(validator.getAllErrors('password')).have.lengthOf(1);
-        expect(validator.getAllErrors('age')).have.lengthOf(1);
-        expect(validator.getAllErrors('mark')).have.lengthOf(1);
-        
-        expect(errors.password).have.lengthOf(1);
-        expect(errors.email).have.lengthOf(1);
-        expect(errors.age).have.lengthOf(1);
-        expect(errors.note).have.lengthOf(1);
-        expect(errors.mark).have.lengthOf(1);
-        expect(isError).to.be.true;
+            expect(result.data).have.property('email');
+            expect(result.data).have.property('password');
+            expect(result.data).have.property('age');
+            expect(result.data).have.property('mark');
+            expect(result.data).have.property('status');
+            expect(result.data).have.property('note');
+    
+            expect(validator.hasError('email')).to.be.true;
+            expect(validator.hasError('password')).to.be.true;
+            expect(validator.hasError('age')).to.be.true;
+            expect(validator.hasError('mark')).to.be.true;
+            expect(validator.hasError('status')).to.be.true;
+            expect(validator.hasError('note')).to.be.true;
+    
+            expect(result.data.email[0]).to.be.equal('The email field must be a valid email');
+            expect(result.data.password[0]).to.be.equal('The password field must be have minimum length of 6');
+            expect(result.data.age[0]).to.be.equal('The age field must be an integer');
+            expect(result.data.mark[0]).to.be.equal('The mark field must have length between 80 and 90');
+            expect(result.data.status[0]).to.be.equal('The status field must be either one of these options pending,processed,cancel');
+            expect(result.data.note[0]).to.be.equal('The note field must be a string');
+    
+            expect(result.data.email).have.lengthOf(1);
+            expect(result.data.password).have.lengthOf(1);
+            expect(result.data.age).have.lengthOf(1);
+            expect(result.data.mark).have.lengthOf(1);
+            expect(result.data.note).have.lengthOf(1);
+            expect(result.data.status).have.lengthOf(1);
+    
+        }).catch(function(error) {
+            console.log(error);
+        });
+        done();
     });
 });
