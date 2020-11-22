@@ -347,7 +347,10 @@ Validator.prototype.processValidation = function() {
 
             if (ruleName.indexOf(':') > 1) {
                 [ruleName, param] = ruleName.split(':');
+            }
 
+            if (typeof(this.validationData[ruleName]) === "string") {
+                this.validationData[ruleName] = this.validationData[ruleName].trim();
             }
 
             if (param !== null && param.indexOf(',') > 0) {
@@ -389,7 +392,7 @@ Validator.prototype.validate = function() {
     
         if (this.session) {
             this.session.validationErrors = this.getAllErrors();
-            this.session.save(() => resolve( this.hasError() ));
+            this.session.save(() => resolve( { data: this.validationData, error: this.hasError() } ));
         } else {
             reject('The session object not defined, use validateSync instead');
         }
