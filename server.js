@@ -36,35 +36,14 @@ app.post('/validation', function(req, res) {
         description: 'optional|string'
     });
 
-    validator.validateSync();
-
-    if (validator.hasError()) {
-        return res.status(425).json(validator.getAllErrors());
-    }
-
-    return res.end('validator testing');
-});
-
-app.post('/validation-session', function(req, res) {
-    const { username, email, age, description } = req.body;
-
-    const validator = req.validator.build({ username, email, age, description }, {
-        username: 'required|string|alpha_numeric',
-        email: 'required|string|email',
-        age: 'required|integer',
-        description: 'optional|string'
-    });
-
-    validator.validate().then(function(fail) {
-        if (fail) {
-            return res.status(425).json(validator.flashErrors());
+    validator.validate().then(function(result) {
+        if (result.status === 'error') {
+            res.status(425).json(result.data);
         }
-
-        return res.end('validation success');
+        res.json(result.data);
     }).catch(function(error) {
-        return res.end(error);
+        res.end('error');
     });
-
 });
 
 app.post('/validation-form', function(req, res) {
@@ -75,15 +54,43 @@ app.post('/validation-form', function(req, res) {
         age: 'required|integer'
     });
 
-    validator.validate().then(function(fail) {
-        if (fail) {
-            return res.redirect('/');
+    validator.validate().then(function(result) {
+        if (result.status === 'error') {
+            res.redirect('/');
         }
 
-        return res.end('validation success');
+        res.end('validation success');
     }).catch(function(error) {
-        return res.end(error);
+        res.end(error);
     });
-})
+});
+
+app.post('/validation-custom-message', function(req, res) {
+
+    const validator = req.validator.build(req.body, {
+        name: 'required|string|min:4',
+        email: 'required|string|email',
+        content: 'optional'
+    });
+    
+    validator.setErrorMessages({
+        email: function(fieldName) {
+            return `this ${fieldName} field should be a valid email`
+        },
+        min: function(fieldName, args) {
+            return `this ${fieldName} field should have minimal length of ${args[0]}`
+        }
+    });
+
+    validator.validate().then(function(result) {
+        if (result.status === 'error') {
+            res.status(425).json(result.data);
+        }
+
+        res.json(result.data);
+    }).catch(function(error) {
+        res.end(error);
+    });
+});
 
 app.listen(3000);

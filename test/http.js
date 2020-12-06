@@ -6,7 +6,7 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('express integration', function() {
-    it('test validation fail with response code 425', function() {
+    it('test validation fail with response code 425', function(done) {
         chai.request('http://localhost:3000')
             .post('/validation')
             .send({
@@ -21,14 +21,15 @@ describe('express integration', function() {
                 expect(response.body).have.property('email').have.lengthOf(1);
                 expect(response.body).have.property('age').have.lengthOf(2);
                 expect(response.body).have.property('description').have.lengthOf(1);
-                expect(response.body.email[0]).to.be.equal('This field must be a valid email');
-                expect(response.body.age[0]).to.be.equal('This field is required');
-                expect(response.body.age[1]).to.be.equal('This field must be an integer');
-                expect(response.body.description[0]).to.be.equal('This field must be a string');
+                expect(response.body.email[0]).to.be.equal('The email field must be a valid email');
+                expect(response.body.age[0]).to.be.equal('The age field is required');
+                expect(response.body.age[1]).to.be.equal('The age field must be an integer');
+                expect(response.body.description[0]).to.be.equal('The description field must be a string');
+                done();
             });
     });
 
-    it('test validation success with response code 200', function() {
+    it('test validation success with response code 200', function(done) {
         chai.request('http://localhost:3000')
             .post('/validation')
             .send({
@@ -40,46 +41,30 @@ describe('express integration', function() {
             .end(function(error, response) {
                 expect(error).to.be.null;
                 expect(response.status).to.be.equal(200);
-                expect(response.text).to.be.equal('validator testing');
+                expect(response.body).have.ownProperty('username');
+                expect(response.body).have.ownProperty('email');
+                expect(response.body).have.ownProperty('age').to.be.a('number');
+                expect(response.body).have.ownProperty('description');
+                done();
             });
     });
 
-    it('validation fail with validation errors message stored in session', function(done) {
+    it('validation error with custom error message', function(done) {
         chai.request('http://localhost:3000')
-            .post('/validation-session')
+            .post('/validation-custom-message')
             .send({
-                username: 'johndoe',
-                email: 'myjohndoe.com',
-                age: '20',
-                description: 'this is a sample description'
+                name: 'sur',
+                email: 'abcdefg',
+                content: 'this is my content'
             })
-            .then(function(response) {
+            .end(function(error, response) {
+                expect(error).to.be.null;
                 expect(response.status).to.be.equal(425);
-                expect(response).to.be.json;
-                expect(response.body).to.have.property('email').have.lengthOf(1);
-                expect(response.body).to.have.property('age').have.lengthOf(1);
-
+                expect(response.body).have.ownProperty('name').lengthOf(1);
+                expect(response.body).have.ownProperty('email').lengthOf(1);
+                expect(response.body.name[0]).to.be.equal('this name field should have minimal length of 4');
+                expect(response.body.email[0]).to.be.equal('this email field should be a valid email');
                 done();
-            }).catch(function(error) {
-                throw error;
-            });
-    });
-
-    it('validation session success', function(done) {
-        chai.request('http://localhost:3000')
-            .post('/validation-session')
-            .send({
-                username: 'johndoe',
-                email: 'my@johndoe.com',
-                age: 20,
-                description: 'this is a sample description'
-            })
-            .then(function(response) {
-                expect(response.status).to.be.equal(200);
-                expect(response.text).to.be.equal('validation success');
-                done();
-            }).catch(function(error) {
-                throw error;
             });
     });
 });
