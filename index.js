@@ -6,8 +6,7 @@
  */
 const Validator = class {
 
-    constructor(session = null) {
-        this.session = session;
+    constructor() {
         this.validationData;
         this.validationRules;
 
@@ -437,24 +436,6 @@ Validator.prototype.getAllErrors = function(key = null) {
 }
 
 /**
- * Store and receive the validation messages from session.
- * 
- * @param {none}
- * @return {objects}
- */
-Validator.prototype.flashErrors = function() {
-
-    if (this.session) {
-        let errors = this.session.validationErrors;
-        this.session.validationErrors = null;
-
-        return errors;
-    }
-
-    return null;
-}
-
-/**
  * Check if validation process has error in any fields.
  * 
  * @param {string} key
@@ -540,10 +521,6 @@ const validation = function() {
 
         if (!req.validator) {
             req.validator = new Validator(req.session);
-        }
-
-        if (!res.locals.validationErrors) {
-            res.locals.validationErrors = req.validator.flashErrors();
         }
     
         next();
