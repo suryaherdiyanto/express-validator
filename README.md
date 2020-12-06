@@ -123,6 +123,16 @@ validator.validate().then(function(result) {
     return res.end(error);
 });
 ```
+Now you can access `validationErrors` in the view file :
+
+```html
+<% if(validationErrors) { %>
+    <% if(validationErrors.username) { %>
+        <span class="badge badge-danger"><%= validationErrors.username[0] %></span>
+    <% } %>
+<% } %>
+```
+
 The promise `result` object will contain two properties `status` and `data`, status will contains 'error' or 'success' and `data` will contains validation error messages if validation fail or return all fields with all value already been trim.
 
 ```javascript
@@ -140,16 +150,6 @@ validator.validate().then(function(result) {
 }).catch(function(error) {
     return res.end(error);
 });
-```
-
-Now you can access `validationErrors` in the view file :
-
-```html
-<% if(validationErrors) { %>
-    <% if(validationErrors.username) { %>
-        <span class="badge badge-danger"><%= validationErrors.username[0] %></span>
-    <% } %>
-<% } %>
 ```
 
 <br>
