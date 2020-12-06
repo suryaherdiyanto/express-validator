@@ -13,6 +13,8 @@ const { validation } = require('express-validator');
 
 express.use(validation());
 ```
+<br>
+<br>
 
 ## Validating request
 When initial setup was done, the validator instance also available on `req` object. You can build your validation rule using `req.validator` object.
@@ -31,24 +33,32 @@ app.post('/validation', function(req, res) {
     });
 
     // Validate fields with rules.
-    validator.validateSync();
+    validator.validate().then(function(result) {
+         // Check if validation has error for each of rules.
+        if (result.status === 'error') {
 
-    // Check if validation has error for each of rules.
-    if (validator.hasError()) {
+            // return status 425 and return error all error messages for each rules and fields.
+            res.status(425).json(result.data);
+        }
 
-        // return status 425 and return error all error messages for each rules and fields.
-        res.status(425).json(validator.getAllErrors());
-    }
-
-    res.end('validator testing');
+        res.end('validation success');
+    });
 });
 ```
-we build the validation using `req.validator.build()` this function will return the `Validator` instance. first parameter will be your field that need to be validated and second parameter validation rules seperated with `|`, each given field will check all given rules so the error messages for each field will return `array`.
+We build the validation using `req.validator.build()` this function will return the `Validator` instance. first parameter will be your field that need to be validated and second parameter validation rules seperated with `|`, each given field will check all given rules so the error messages for each field will return `array`.
+<br>
+<br>
 
+> **validateSync** function was method since version 1.0.2, use **validate()** instead
 
 The `validator.validateSync` will validate all given fields and fill the error message if validation was fail for given rules.
 
-> If you working with session library like [express-session](https://github.com/expressjs/session) is highly recommended using the `validate()` method, it will return promise to make sure all validation errors is saved to session object.<br><br>
+> If you working with session library like [express-session](https://github.com/expressjs/session) is highly recommended using the `validate()` method, it will return promise to make sure all validation errors is saved to session object.
+> **
+
+<br>
+<br>
+
 
 ### Example validation with session
 ```javascript
@@ -80,8 +90,8 @@ app.post('/validation-session', function(req, res) {
     });
 
     // Validate with rules
-    validator.validate().then(function(fail) {
-        if (fail) {
+    validator.validate().then(function(result) {
+        if (result.status === 'error') {
             // If there are validations error redirect to `home` route
             return res.redirect('/home');
         }
@@ -96,7 +106,43 @@ app.post('/validation-session', function(req, res) {
 app.listen(3000);
 ```
 <br>
-You can access `validationErrors` object out of the box in view file for example :
+
+> Since version **1.0.2**, you will assign the `validationErrors` object by your self because this package no longer using `express-session` library for flexibility.
+
+This can be done with:
+```javascript
+validator.validate().then(function(result) {
+    if (result.status === 'error') {
+        // If there are validations error redirect to `home` route
+        res.locals.validationErrors = result.data;
+        return res.redirect('/home');
+    }
+
+    return res.end('validation success');
+}).catch(function(error) {
+    return res.end(error);
+});
+```
+The promise `result` object will contain two properties `status` and `data`, status will contains 'error' or 'success' and `data` will contains validation error messages if validation fail or return all fields with all value already been trim.
+
+```javascript
+validator.validate().then(function(result) {
+    if (result.status === 'error') {
+        // If there are validations error redirect to `home` route
+        res.status(200).json(result.data) // This will return validation error messages
+    }
+
+    if (result.status === 'success) {
+        res.status(200).json(result.data) // This will return all fields and its value.
+    }
+
+    return res.end('validation success');
+}).catch(function(error) {
+    return res.end(error);
+});
+```
+
+Now you can access `validationErrors` in the view file :
 
 ```html
 <% if(validationErrors) { %>
@@ -105,9 +151,31 @@ You can access `validationErrors` object out of the box in view file for example
     <% } %>
 <% } %>
 ```
-this `validationErrors` object stored in `res.locals` object it will flashed from session storage, so once it retrived the `validationErrors` object no longer hold the error messages.
 
 <br>
+<br>
+
+## Custom Error Messages
+> This feature available for version 1.0.2++
+
+Now you can define a custom error message before validation process. For example : 
+
+```javascript
+const validator = req.validator.build(req.body, {
+    name: 'required|string|min:4',
+    email: 'required|string|email',
+    content: 'optional'
+});
+
+validator.setErrorMessages({
+    email: function(fieldName) {
+        return `this ${fieldName} field should be a valid email`
+    },
+    min: function(fieldName, args) {
+        return `this ${fieldName} field should have minimal length of ${args[0]}`
+    }
+});
+```
 
 ## Available Validation Rules
 | Rule Name | Parameters | Descriptions |
@@ -124,6 +192,7 @@ this `validationErrors` object stored in `res.locals` object it will flashed fro
 | optional | none | This rule allow some field to be empty |
 | between | *min*,*max* | Field under this rule must have value between given parameters, example usage with parameter `between:5,20` |
 | url | none | Field under this rule must be valid url |
+| enum | a,b,c,...,n | Field under `enum` rule must match between enum set `enum:example1,example2,example3` |
 
 <br>
 
@@ -136,4 +205,4 @@ this `validationErrors` object stored in `res.locals` object it will flashed fro
 | `getAllErrors()`| none       | objects      | return all errors for each field.|
 | `getError()`| field_name       | object      | return validation errors for specified field.|
 | `validate()`| none       | Promise      | promise based validation process, it will store validation error messages on session storage |
-| `validateSync()`| none       | void      | validation proses without promise |
+| `setErrorMessages()`| object       | void      | set the custom validation error messages |
