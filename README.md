@@ -206,3 +206,10 @@ validator.setErrorMessages({
 | `getError()`| field_name       | object      | return validation errors for specified field.|
 | `validate()`| none       | Promise      | promise based validation process, it will store validation error messages on session storage |
 | `setErrorMessages()`| object       | void      | set the custom validation error messages |
+
+<br>
+
+## Testing
+``` npm run test ```
+### Http test
+``` npm run test-http ```
